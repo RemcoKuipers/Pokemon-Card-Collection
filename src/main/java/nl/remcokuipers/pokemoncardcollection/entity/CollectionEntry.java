@@ -15,11 +15,11 @@ public class CollectionEntry {
     @Column(nullable = false)
     private Condition condition;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pokemon_card_id", nullable = false)
     private PokemonCard pokemonCard;
 

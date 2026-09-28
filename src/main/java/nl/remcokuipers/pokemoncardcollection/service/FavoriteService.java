@@ -12,6 +12,8 @@ import nl.remcokuipers.pokemoncardcollection.repository.FavoriteRepository;
 import nl.remcokuipers.pokemoncardcollection.repository.PokemonCardRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class FavoriteService {
     private final PokemonCardRepository pokemonCardRepository;
@@ -49,6 +51,22 @@ public class FavoriteService {
         Favorite savedFavorite = favoriteRepository.save(favorite);
 
         return favoriteMapper.mapToResponseDTO(savedFavorite);
+    }
+
+    public List<FavoriteResponseDTO> getFavoritesByUser(User user) {
+       List<Favorite> favorites = favoriteRepository.findByUser(user);
+
+       return favorites
+               .stream()
+               .map(favoriteMapper::mapToResponseDTO)
+               .toList();
+    }
+
+    public void deleteFavorite(Long id, User user) {
+        Favorite favorite =
+                favoriteRepository.findByIdAndUser(id, user)
+                        .orElseThrow(() -> new ResourceNotFoundException("Favorite Not Found with ID: " + id));
+        favoriteRepository.delete(favorite);
 
     }
 }

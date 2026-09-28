@@ -4,4 +4,5 @@ import nl.remcokuipers.pokemoncardcollection.entity.PokemonCard;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface PokemonCardRepository extends JpaRepository<PokemonCard, Long> {
+    Long id(Long id);
 }

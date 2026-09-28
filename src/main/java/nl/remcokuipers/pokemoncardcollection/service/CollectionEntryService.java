@@ -12,6 +12,7 @@ import nl.remcokuipers.pokemoncardcollection.repository.PokemonCardRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CollectionEntryService {
@@ -54,5 +55,16 @@ public class CollectionEntryService {
                 .map(collectionEntryMapper::mapToResponseDTO)
                 .toList();
 
+    }
+
+    public CollectionEntryResponseDTO getCollectionEntryById(Long id, User user) {
+        CollectionEntry collectionEntry =
+                collectionEntryRepository.findByIdAndUser(id, user)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Collection entry with ID " + id + " not found."
+                                )
+                        );
+        return collectionEntryMapper.mapToResponseDTO(collectionEntry);
     }
 }

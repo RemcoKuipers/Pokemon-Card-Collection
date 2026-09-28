@@ -19,8 +19,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Map<String, String>> handleValidationErrors(
-            MethodArgumentNotValidException exception
-    ) {
+            MethodArgumentNotValidException exception) {
         Map<String, String> errors = new HashMap<>();
 
         exception.getBindingResult()
@@ -30,6 +29,12 @@ public class GlobalExceptionHandler {
                 );
 
         return ResponseEntity.badRequest().body(errors);
+    }
+
+    @ExceptionHandler(DuplicateResourceException.class)
+    public ResponseEntity<String> handleDuplicateResourceException
+            (DuplicateResourceException exception) {
+        return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
     }
 }
 

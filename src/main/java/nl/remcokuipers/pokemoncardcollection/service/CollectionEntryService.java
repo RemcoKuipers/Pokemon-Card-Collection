@@ -11,6 +11,8 @@ import nl.remcokuipers.pokemoncardcollection.repository.CollectionEntryRepositor
 import nl.remcokuipers.pokemoncardcollection.repository.PokemonCardRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class CollectionEntryService {
     private final PokemonCardRepository pokemonCardRepository;
@@ -42,5 +44,15 @@ public class CollectionEntryService {
         CollectionEntry savedCollectionEntry = collectionEntryRepository.save(collectionEntry);
 
         return collectionEntryMapper.mapToResponseDTO(savedCollectionEntry);
+    }
+
+    public List<CollectionEntryResponseDTO> getCollectionEntriesByUser(User user) {
+        List<CollectionEntry> collectionEntries = collectionEntryRepository.findByUser(user);
+
+        return collectionEntries
+                .stream()
+                .map(collectionEntryMapper::mapToResponseDTO)
+                .toList();
+
     }
 }

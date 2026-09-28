@@ -2,6 +2,7 @@ package nl.remcokuipers.pokemoncardcollection.service;
 
 import nl.remcokuipers.pokemoncardcollection.dto.CollectionEntryRequestDTO;
 import nl.remcokuipers.pokemoncardcollection.dto.CollectionEntryResponseDTO;
+import nl.remcokuipers.pokemoncardcollection.dto.CollectionEntryUpdateDTO;
 import nl.remcokuipers.pokemoncardcollection.entity.CollectionEntry;
 import nl.remcokuipers.pokemoncardcollection.entity.PokemonCard;
 import nl.remcokuipers.pokemoncardcollection.entity.User;
@@ -12,7 +13,6 @@ import nl.remcokuipers.pokemoncardcollection.repository.PokemonCardRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CollectionEntryService {
@@ -66,5 +66,23 @@ public class CollectionEntryService {
                                 )
                         );
         return collectionEntryMapper.mapToResponseDTO(collectionEntry);
+    }
+
+    public CollectionEntryResponseDTO updateCollectionEntry(
+            Long id,
+            CollectionEntryUpdateDTO dto,
+            User user) {
+        CollectionEntry collectionEntry =
+                collectionEntryRepository.findByIdAndUser(id, user)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Collection entry with ID " + id + " not found."
+                                )
+                        );
+        collectionEntry.setQuantity(dto.quantity());
+        collectionEntry.setCondition(dto.condition());
+
+        CollectionEntry savedCollectionEntry = collectionEntryRepository.save(collectionEntry);
+        return collectionEntryMapper.mapToResponseDTO(savedCollectionEntry);
     }
 }

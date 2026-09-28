@@ -85,4 +85,15 @@ public class CollectionEntryService {
         CollectionEntry savedCollectionEntry = collectionEntryRepository.save(collectionEntry);
         return collectionEntryMapper.mapToResponseDTO(savedCollectionEntry);
     }
+
+    public void  deleteCollectionEntry(Long id, User user) {
+        CollectionEntry collectionEntry =
+                collectionEntryRepository.findByIdAndUser(id, user)
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException("Collection entry with ID " + id + " not found."
+                                )
+                        );
+        collectionEntryRepository.delete(collectionEntry);
+
+    }
 }

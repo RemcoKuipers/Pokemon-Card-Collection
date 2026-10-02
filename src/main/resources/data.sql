@@ -6,3 +6,9 @@ VALUES ('test-pikachu-001',
         'Common',
         'Testset'
        );
+
+INSERT INTO users (username, email, password, enabled)
+VALUES ('testuser',
+        'testuser@example.com',
+        'placeholder',
+        true);

@@ -37,4 +37,11 @@ public class CollectionEntryController {
         CollectionEntryResponseDTO createdEntry = collectionEntryService.addCollectionEntry(dto, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEntry);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CollectionEntryResponseDTO> getCollectionEntryById(@PathVariable long id) {
+        User user = currentUserService.getCurrentUser();
+        CollectionEntryResponseDTO collectionEntry = collectionEntryService.getCollectionEntryById(id, user);
+        return ResponseEntity.ok(collectionEntry);
+    }
 }

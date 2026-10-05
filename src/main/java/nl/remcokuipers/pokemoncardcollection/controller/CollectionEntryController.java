@@ -52,4 +52,11 @@ public class CollectionEntryController {
         CollectionEntryResponseDTO updatedEntry = collectionEntryService.updateCollectionEntry(id, dto, user);
         return ResponseEntity.ok(updatedEntry);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCollectionEntry(@PathVariable long id) {
+        User user = currentUserService.getCurrentUser();
+        collectionEntryService.deleteCollectionEntry(id, user);
+        return ResponseEntity.noContent().build();
+    }
 }

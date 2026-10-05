@@ -38,4 +38,11 @@ public class FavoriteController {
         FavoriteResponseDTO createdEntry = favoriteService.addFavorite(favoriteRequestDTO, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEntry);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteFavoriteEntry(@PathVariable Long id) {
+        User user = currentUserService.getCurrentUser();
+        favoriteService.deleteFavorite(id, user);
+        return ResponseEntity.noContent().build();
+    }
 }

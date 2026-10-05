@@ -3,6 +3,7 @@ package nl.remcokuipers.pokemoncardcollection.controller;
 import jakarta.validation.Valid;
 import nl.remcokuipers.pokemoncardcollection.dto.CollectionEntryRequestDTO;
 import nl.remcokuipers.pokemoncardcollection.dto.CollectionEntryResponseDTO;
+import nl.remcokuipers.pokemoncardcollection.dto.CollectionEntryUpdateDTO;
 import nl.remcokuipers.pokemoncardcollection.entity.User;
 import nl.remcokuipers.pokemoncardcollection.service.CollectionEntryService;
 import nl.remcokuipers.pokemoncardcollection.service.CurrentUserService;
@@ -19,7 +20,7 @@ public class CollectionEntryController {
     private final CollectionEntryService collectionEntryService;
     private final CurrentUserService currentUserService;
 
-    public CollectionEntryController(CollectionEntryService collectionEntryService,  CurrentUserService currentUserService) {
+    public CollectionEntryController(CollectionEntryService collectionEntryService, CurrentUserService currentUserService) {
         this.collectionEntryService = collectionEntryService;
         this.currentUserService = currentUserService;
     }
@@ -27,7 +28,7 @@ public class CollectionEntryController {
     @GetMapping
     public ResponseEntity<List<CollectionEntryResponseDTO>> getCollectionEntries() {
         User user = currentUserService.getCurrentUser();
-        return  ResponseEntity.ok(collectionEntryService.getCollectionEntriesByUser(user));
+        return ResponseEntity.ok(collectionEntryService.getCollectionEntriesByUser(user));
 
     }
 
@@ -43,5 +44,12 @@ public class CollectionEntryController {
         User user = currentUserService.getCurrentUser();
         CollectionEntryResponseDTO collectionEntry = collectionEntryService.getCollectionEntryById(id, user);
         return ResponseEntity.ok(collectionEntry);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CollectionEntryResponseDTO> updateCollectionEntry(@PathVariable long id, @Valid @RequestBody CollectionEntryUpdateDTO dto) {
+        User user = currentUserService.getCurrentUser();
+        CollectionEntryResponseDTO updatedEntry = collectionEntryService.updateCollectionEntry(id, dto, user);
+        return ResponseEntity.ok(updatedEntry);
     }
 }

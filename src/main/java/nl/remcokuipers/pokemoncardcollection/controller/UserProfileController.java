@@ -42,4 +42,11 @@ public class UserProfileController {
         UserProfileResponseDTO updatedEntry = userProfileService.updateUserProfile(dto, user);
         return ResponseEntity.ok(updatedEntry);
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUserProfile(@PathVariable Long id) {
+        User user = currentUserService.getCurrentUser();
+        userProfileService.deleteUserProfile(id, user);
+        return ResponseEntity.noContent().build();
+    }
 }

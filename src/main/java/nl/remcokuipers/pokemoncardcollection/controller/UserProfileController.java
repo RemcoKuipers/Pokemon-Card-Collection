@@ -1,14 +1,14 @@
 package nl.remcokuipers.pokemoncardcollection.controller;
 
+import jakarta.validation.Valid;
+import nl.remcokuipers.pokemoncardcollection.dto.UserProfileRequestDTO;
 import nl.remcokuipers.pokemoncardcollection.dto.UserProfileResponseDTO;
 import nl.remcokuipers.pokemoncardcollection.entity.User;
 import nl.remcokuipers.pokemoncardcollection.service.CurrentUserService;
 import nl.remcokuipers.pokemoncardcollection.service.UserProfileService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.*;
 
 
 @RestController
@@ -26,5 +26,12 @@ public class UserProfileController {
     public ResponseEntity<UserProfileResponseDTO> getUserProfile() {
         User user = currentUserService.getCurrentUser();
         return ResponseEntity.ok(userProfileService.getUserProfileByUser(user));
+    }
+
+    @PostMapping
+    public ResponseEntity<UserProfileResponseDTO> addUserProfile(@Valid @RequestBody UserProfileRequestDTO userProfileRequestDTO) {
+        User user = currentUserService.getCurrentUser();
+        UserProfileResponseDTO createdEntry = userProfileService.addUserProfile(userProfileRequestDTO, user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdEntry);
     }
 }

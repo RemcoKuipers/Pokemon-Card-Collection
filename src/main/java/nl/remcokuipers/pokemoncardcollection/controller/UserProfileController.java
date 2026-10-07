@@ -3,6 +3,7 @@ package nl.remcokuipers.pokemoncardcollection.controller;
 import jakarta.validation.Valid;
 import nl.remcokuipers.pokemoncardcollection.dto.UserProfileRequestDTO;
 import nl.remcokuipers.pokemoncardcollection.dto.UserProfileResponseDTO;
+import nl.remcokuipers.pokemoncardcollection.dto.UserProfileUpdateDTO;
 import nl.remcokuipers.pokemoncardcollection.entity.User;
 import nl.remcokuipers.pokemoncardcollection.service.CurrentUserService;
 import nl.remcokuipers.pokemoncardcollection.service.UserProfileService;
@@ -33,5 +34,12 @@ public class UserProfileController {
         User user = currentUserService.getCurrentUser();
         UserProfileResponseDTO createdEntry = userProfileService.addUserProfile(userProfileRequestDTO, user);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdEntry);
+    }
+
+    @PutMapping
+    public ResponseEntity<UserProfileResponseDTO> updateUserProfile(@Valid @RequestBody UserProfileUpdateDTO dto) {
+        User user = currentUserService.getCurrentUser();
+        UserProfileResponseDTO updatedEntry = userProfileService.updateUserProfile(dto, user);
+        return ResponseEntity.ok(updatedEntry);
     }
 }

@@ -7,8 +7,10 @@ VALUES ('test-pikachu-001',
         'Testset'
        );
 
-INSERT INTO users (username, email, password, enabled)
+INSERT INTO users (username, email, password, enabled, keycloak_id)
 VALUES ('testuser',
         'testuser@example.com',
         'placeholder',
-        true);
+        true,
+        'fc91f345-48a3-45f6-bafa-f32188145337'
+        );

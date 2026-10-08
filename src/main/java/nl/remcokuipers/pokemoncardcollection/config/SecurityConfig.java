@@ -46,6 +46,7 @@ public class SecurityConfig {
                         ))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/pokemoncards", "/pokemoncards/**").hasRole("USER")
+                        .requestMatchers("/collectionentries", "/collectionentries/**").hasRole("USER")
                         .anyRequest().denyAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

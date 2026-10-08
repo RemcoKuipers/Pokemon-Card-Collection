@@ -20,6 +20,8 @@ public class User {
     private String password;
     @Column(nullable = false)
     private Boolean enabled = true;
+    @Column(unique = true, nullable = false)
+    private String keycloakId;
 
     public User() {
     }
@@ -76,6 +78,14 @@ public class User {
 
     public Set<Role> getRoles() {
         return roles;
+    }
+
+    public String getKeycloakId() {
+        return keycloakId;
+    }
+
+    public void setKeycloakId(String keycloakId) {
+        this.keycloakId = keycloakId;
     }
 
     public void setRoles(Set<Role> roles) {

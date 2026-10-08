@@ -30,6 +30,8 @@ public class SecurityConfig {
     private String issuer;
     @Value("${spring.security.oauth2.resourceserver.jwt.audience}")
     private String audience;
+    @Value("${client-id}")
+    private String clientId;
 
 
     @Bean
@@ -67,12 +69,19 @@ public class SecurityConfig {
             }
 
             private List<String> getAuthorities(Jwt jwt) {
-                Map<String, Object> realmAccess = jwt.getClaim("realm_access");
-                if (realmAccess != null && realmAccess.containsKey("roles")) {
-                    {
-                        return (List<String>) realmAccess.get("roles");
+                Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
+
+                if (resourceAccess != null) {
+                    if (resourceAccess.get(clientId) instanceof Map) {
+                        Map<String, Object> client =
+                                (Map<String, Object>) resourceAccess.get(clientId);
+
+                        if (client != null && client.containsKey("roles")) {
+                            return (List<String>) client.get("roles");
+                        }
                     }
                 }
+
                 return new ArrayList<>();
             }
         });

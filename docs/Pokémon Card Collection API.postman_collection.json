@@ -1,0 +1,1731 @@
+{
+  "info": {
+    "_postman_id": "22ab4746-8e79-4e51-afce-5c17b43cae11",
+    "name": "Pokémon Card Collection API",
+    "description": "Postman-requests voor het controleren van de Pokémon Card Collection API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49054307",
+    "_collection_link": "https://go.postman.co/collection/49054307-22ab4746-8e79-4e51-afce-5c17b43cae11?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "PokemonCards",
+      "item": [
+        {
+          "name": "Alle Pokémonkaarten ophalen",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "value": "PokemonCardCollection",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth",
+                  "type": "string"
+                },
+                {
+                  "key": "tokenName",
+                  "value": "Pokemon API testuser",
+                  "type": "string"
+                },
+                {
+                  "key": "addTokenTo",
+                  "value": "header",
+                  "type": "string"
+                },
+                {
+                  "key": "clientSecret",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "scope",
+                  "value": "openid",
+                  "type": "string"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://oauth.pstmn.io/v1/callback",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pokemoncards",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pokemoncards"
+              ]
+            },
+            "description": "Haalt alle pokemonkaarten op. Vereist de USER client rol. Verwacht: 200 OK met een lijst van kaarten"
+          },
+          "response": []
+        },
+        {
+          "name": "Pokémonkaart ophalen met onbekend ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pokemoncards/5",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pokemoncards",
+                "5"
+              ]
+            },
+            "description": "Haalt de Pokémonkaart met ID 5 op. Als dit ID niet bestaat, verwacht ik deze response: 404 Not Found met de melding \"PokemonCard with id 5 not found!\"."
+          },
+          "response": []
+        },
+        {
+          "name": "Pokémonkaart ophalen met bekend ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pokemoncards/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pokemoncards",
+                "1"
+              ]
+            },
+            "description": "Haalt de Pokémonkaart met ID 1 op. Als dit ID niet bestaat, verwacht ik deze response: 404 Not Found met de melding \"PokemonCard with id 1 not found!\". Als de testgegevens uit data.sql geladen zijn, verwacht ik status 200 OK en Pikachu als response."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "CollectionEntries",
+      "item": [
+        {
+          "name": "Collectie van huidige gebruiker ophalen",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries"
+              ]
+            },
+            "description": "Dit request haalt de collectie van de ingelogde gebruiker op, vereist USER clientrol.. Ik verwacht een status 200 OK met een lijst van collection entrys waarbij de lijst leeg mag zijn (\\[\\])"
+          },
+          "response": []
+        },
+        {
+          "name": "Kaart toevoegen aan collectie",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pokemonCardId\": 1,\r\n    \"quantity\": 2,\r\n    \"condition\": \"MINT\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries"
+              ]
+            },
+            "description": "Voegd een kaart toe aan collectie, ik verwacht een status: 201 Created met als return het json object met de toegevoegde collectie."
+          },
+          "response": []
+        },
+        {
+          "name": "Kaart toevoegen ongeldig aantal",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pokemonCardId\": 1,\r\n    \"quantity\": 0,\r\n    \"condition\": \"MINT\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries"
+              ]
+            },
+            "description": "Als er een waarde die ongeldig is bij quantity word ingevuld verwacht ik dat er een 400 Bad Request terugkomt met de tekst: must be greater than 0"
+          },
+          "response": []
+        },
+        {
+          "name": "Kaart toevoegen onbekend kaart ID",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pokemonCardId\": 999,\r\n    \"quantity\": 2,\r\n    \"condition\": \"MINT\"  \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries"
+              ]
+            },
+            "description": "Als er een ongeldige kaart id word ingevuld verwacht ik een 404 Not Found met als tekst: Pokemon Card Not Found with ID: (id nummer)"
+          },
+          "response": []
+        },
+        {
+          "name": "Kaart toevoegen conditie ontrbreekt",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pokemonCardId\": 1,\r\n    \"quantity\": 2\r\n      \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries"
+              ]
+            },
+            "description": "Als er geen condition word ingevuld verwacht ik een 400 Bad Request met als tekst: must not be null"
+          },
+          "response": []
+        },
+        {
+          "name": "Collectie entry ophalen bestaand ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "1"
+              ]
+            },
+            "description": "Voer eerst Kaart toevoegen aan collectie uit zodat we een id krijgen. Gebruik het teruggegeven entry ID voor het maken van deze GET request. Ik verwacht 1 object met de opgeslagen gegevens terug met een 200 OK status. Als er een ID wordt ingevuld wat niet bestaat verwacht ik \"Collection entry with ID (niet bestaand id nummer) not found.\" met een 404 Not Found status terug."
+          },
+          "response": []
+        },
+        {
+          "name": "Collectie entry ophalen met een niet bestaand ID",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries/999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "999"
+              ]
+            },
+            "description": "Als er een ID wordt ingevuld wat niet bestaat bijvoorbeeld 999 verwacht ik \"Collection entry with ID (niet bestaand id nummer) not found.\" met een 404 Not Found status terug."
+          },
+          "response": []
+        },
+        {
+          "name": "Collectie entry aanpassen onbekend ID",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"quantity\": 5,\r\n    \"condition\": \"GOOD\" \r\n      \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries/999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "999"
+              ]
+            },
+            "description": "Als je een niet bestaand entry ID invult bijvoorbeeld 999 verwacht ik dat je een status 404 Not Found terug krijgt met als return: \"Collection entry with ID (opgegeven ID) not found.\""
+          },
+          "response": []
+        },
+        {
+          "name": "Collectie entry aanpassen ongeldig aantal",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"quantity\": 0,\r\n    \"condition\": \"GOOD\"\r\n      \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "1"
+              ]
+            },
+            "description": "Voer eerst Kaart toevoegen aan collectie uit zodat we een id krijgen. Gebruik het teruggegeven entry ID voor het maken van deze PUT request. Als je quantity 0 of een negatief getal meegeeft verwacht ik een 400 Bad Request met als response: \"quantity: must be greater than 0\"."
+          },
+          "response": []
+        },
+        {
+          "name": "Collectie entry aanpassen",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"quantity\": 5,\r\n    \"condition\": \"GOOD\" \r\n      \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "1"
+              ]
+            },
+            "description": "Voer eerst Kaart toevoegen aan collectie uit zodat we een id krijgen. Gebruik het teruggegeven entry ID voor het maken van deze PUT request. In de Body heb ik het aantal en conditie meegestuurd en verwacht ik een 200 OK status met de aangepaste gegevens in de responsebody."
+          },
+          "response": []
+        },
+        {
+          "name": "Collectie entry verwijderen",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "1"
+              ]
+            },
+            "description": "Voer eerst Kaart toevoegen aan collectie uit zodat we een id krijgen. Gebruik het teruggegeven entry ID voor het maken van deze DELETE request. Ik verwacht een status 204 No Content met een lege body terug."
+          },
+          "response": []
+        },
+        {
+          "name": "Collectie entry verwijderen onbekend ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries/999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "999"
+              ]
+            },
+            "description": "Het ID is 999 en bestaat niet voer DELETE Collectie entry verwijderen onbekend ID uit. Ik verwacht een status: 404 Not Found met als response: \"Collection entry with ID (ID) not found.\""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Favorites",
+      "item": [
+        {
+          "name": "Favorieten van huidige gebruiker ophalen",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/favorites",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "favorites"
+              ]
+            },
+            "description": "Haalt uitsluitend de favorieten van de ingelogde gebruiker op. Vereist de USER clientrol. Verwacht: 200 OK, de lijst mag leeg zijn."
+          },
+          "response": []
+        },
+        {
+          "name": "Kaart toevoegen aan favorieten",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pokemonCardId\": 1\r\n      \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/favorites",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "favorites"
+              ]
+            },
+            "description": "Voegd een kaart toe aan favorieten, ik verwacht een status: 201 Created met als return het json object met de toegevoegde favoriet."
+          },
+          "response": []
+        },
+        {
+          "name": "Kaart toevoegen aan favorieten kaart ID ontbreekt",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n   \r\n      \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/favorites",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "favorites"
+              ]
+            },
+            "description": "Als je een favoriet toevoegd met een ontbrekend ID verwacht ik een status: 400 Bad Request met als response: \"pokemonCardId: must not be null.\""
+          },
+          "response": []
+        },
+        {
+          "name": "Kaart toevoegen aan favorieten onbekende kaart",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pokemonCardId\": 999\r\n      \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/favorites",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "favorites"
+              ]
+            },
+            "description": "Stuur een POST met een niet bestaand pokemonCardId, bijvoorbeeld 999. ik verwacht een status: 404 Not Found met response: \"Pokemon Card Not Found with ID: (id).\""
+          },
+          "response": []
+        },
+        {
+          "name": "Kaart toevoegen aan favorieten dubbele kaart",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"pokemonCardId\": 1\r\n   \r\n      \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/favorites",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "favorites"
+              ]
+            },
+            "description": "De kaart moet van te voren al als favoriet toegevoegd zijn. Voeg je dezelfde kaart opnieuw voor dezelfde gebruiker als favoriet toe verwacht ik een status: 409 Conflict met als return: \"Pokemon Card with ID: (ID) is already a favorite.\""
+          },
+          "response": []
+        },
+        {
+          "name": "Favoriet verwijderen",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/favorites/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "favorites",
+                "1"
+              ]
+            },
+            "description": "Voer eerst Kaart toevoegen aan favorieten uit zodat we een id krijgen. Gebruik het teruggegeven entry ID voor het maken van deze DELETE request. Ik verwacht een status 204 No Content met een lege body terug."
+          },
+          "response": []
+        },
+        {
+          "name": "Favoriet verwijderen onbekend ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/favorites/999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "favorites",
+                "999"
+              ]
+            },
+            "description": "Bij maken van deze DELETE request. Verwacht ik een status: 404 Not Found met als response: \"Favorite Not Found with ID: 999.\""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "UserProfiles",
+      "item": [
+        {
+          "name": "Profiel ophalen geen profiel aanwezig",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles"
+              ]
+            },
+            "description": "Als er geen profiel bestaat en je voert deze GET Profiel ophalen geen profiel aanwezig uit verwacht ik een status: 404 Not Found met response: \"User profile does not exist.\""
+          },
+          "response": []
+        },
+        {
+          "name": "Profiel ophalen bestaand profiel",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles"
+              ]
+            },
+            "description": "Voer eerst een POST Gebruikers profiel aanmaken aan. Ik verwacht status 200 OK met als return: dezelfde gegevens als bij het aanmaken in de body."
+          },
+          "response": []
+        },
+        {
+          "name": "Gebruikers profiel aanmaken",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"displayName\": \"Piet\",\r\n    \"country\": \"Belgium\",\r\n    \"dateOfBirth\": \"2016-01-18\",\r\n    \"gender\": \"OTHER\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles"
+              ]
+            },
+            "description": "Voegd userprofile toe aan userprofiles. ik verwacht een status: 201 Created met als return het json object met de toegevoegde user profile."
+          },
+          "response": []
+        },
+        {
+          "name": "Gebruikers profiel aanmaken lege weergavenaam",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"displayName\": \"\",\r\n    \"country\": \"Belgium\",\r\n    \"dateOfBirth\": \"2016-01-18\",\r\n    \"gender\": \"OTHER\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles"
+              ]
+            },
+            "description": "Voegd userprofile toe aan userprofiles. Het aanmaken van het profiel mislukt omdat er een lege naam instaat. ik verwacht een status:400 met response: \"displayName: must not be blank.\""
+          },
+          "response": []
+        },
+        {
+          "name": "Gebruikers profiel aanmaken profiel bestaat al",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"displayName\": \"Piet\",\r\n    \"country\": \"Belgium\",\r\n    \"dateOfBirth\": \"2016-01-18\",\r\n    \"gender\": \"OTHER\" \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles"
+              ]
+            },
+            "description": "Als er al een userprofile bestaat verwacht ik een status: 409 Conflict met als return: \"User already has a profile.\""
+          },
+          "response": []
+        },
+        {
+          "name": "Gebruikers profiel aanpassen",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"displayName\": \"jan\",\r\n    \"country\": \"Netherlands\",\r\n    \"gender\": \"OTHER\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles"
+              ]
+            },
+            "description": "Voer eerst POST Gebruikers profiel aanmaken uit, als je dan Put Gebruikers profiel aanpassen uitvoerd verwacht ik een status: 200 OK met als response: de aangepaste gegevens uit de body."
+          },
+          "response": []
+        },
+        {
+          "name": "Gebruikers profiel aanpassen profiel ontbreekt",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"displayName\": \"jan\",\r\n    \"country\": \"Netherlands\",\r\n    \"gender\": \"OTHER\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles"
+              ]
+            },
+            "description": "Verwijder eerst het bestaand profiel als er 1 bestaat. Als je dan Put Gebruikers profiel aanpassen uitvoerd zonder eerst POST Gebruikers profiel aanmaken uit te voeren verwacht ik een status: 404 Not Found met als response: \"User profile does not exist.\""
+          },
+          "response": []
+        },
+        {
+          "name": "Gebruikers profiel aanpassen gender ontbreekt",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"displayName\": \"jan\",\r\n    \"country\": \"Netherlands\"\r\n   \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles"
+              ]
+            },
+            "description": "Voer eerst POST Gebruikers profiel aanmaken uit, als je dan Put Gebruikers profiel aanpassen uitvoerd zonder gender in te vullen verwacht ik een status: 400 Bad Request met response: \"gender must not be null\""
+          },
+          "response": []
+        },
+        {
+          "name": "Gebruikers profiel aanpassen lege displayName",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"displayName\": \"\",\r\n    \"country\": \"Netherlands\",\r\n    \"gender\": \"OTHER\"\r\n   \r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles"
+              ]
+            },
+            "description": "Voer eerst POST Gebruikers profiel aanmaken uit, als je dan Put Gebruikers profiel aanpassen uitvoerd zonder displayName in te vullen verwacht ik een status: 400 Bad Request met response: \"displayName must not be blank\""
+          },
+          "response": []
+        },
+        {
+          "name": "Gebruikers profiel verwijderen",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles/1",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles",
+                "1"
+              ]
+            },
+            "description": "Voer eerst POST Gebruikers profiel aanmaken uit zodat we een id krijgen. Gebruik het teruggegeven entry ID voor het maken van deze DELETE request. Ik verwacht een status 204 No Content met een lege body terug. Als er geen profiel is aangemaakt verwacht ik een status 404 met als response: \"User profile with id (id) does not exist.\""
+          },
+          "response": []
+        },
+        {
+          "name": "Gebruikers profiel verwijderen onbekend ID",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles/999",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles",
+                "999"
+              ]
+            },
+            "description": "Het ID is 999 en bestaat niet voer DELETE Gebruikers profiel verwijderen onbekend ID uit. Ik verwacht een status: 404 Not Found met als response: \"User profile with id 999 does not exist\""
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Securitytests",
+      "item": [
+        {
+          "name": "GET andermans entry 404 error",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "value": "PokemonCardCollection",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth",
+                  "type": "string"
+                },
+                {
+                  "key": "tokenName",
+                  "value": "Pokemon API testuser",
+                  "type": "string"
+                },
+                {
+                  "key": "addTokenTo",
+                  "value": "header",
+                  "type": "string"
+                },
+                {
+                  "key": "clientSecret",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "scope",
+                  "value": "openid",
+                  "type": "string"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://oauth.pstmn.io/v1/callback",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "2"
+              ]
+            },
+            "description": "Uitvoeren met het token van test2 op een bestaande entry van test. Verwacht: 404 Not Found. Controleer daarna als test dat de entry nog bestaat en ongewijzigd is."
+          },
+          "response": []
+        },
+        {
+          "name": "PUT andermans entry 404 error",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "value": "PokemonCardCollection",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth",
+                  "type": "string"
+                },
+                {
+                  "key": "tokenName",
+                  "value": "Pokemon API testuser",
+                  "type": "string"
+                },
+                {
+                  "key": "addTokenTo",
+                  "value": "header",
+                  "type": "string"
+                },
+                {
+                  "key": "clientSecret",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "scope",
+                  "value": "openid",
+                  "type": "string"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://oauth.pstmn.io/v1/callback",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"quantity\": 99,\r\n  \"condition\": \"USED\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "2"
+              ]
+            },
+            "description": "Uitvoeren met het token van test2 op een bestaande entry van test. Verwacht: 404 Not Found. Controleer daarna als test dat de entry nog bestaat en ongewijzigd is."
+          },
+          "response": []
+        },
+        {
+          "name": "DELETE andermans entry 404 error",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "value": "PokemonCardCollection",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth",
+                  "type": "string"
+                },
+                {
+                  "key": "tokenName",
+                  "value": "Pokemon API testuser",
+                  "type": "string"
+                },
+                {
+                  "key": "addTokenTo",
+                  "value": "header",
+                  "type": "string"
+                },
+                {
+                  "key": "clientSecret",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "scope",
+                  "value": "openid",
+                  "type": "string"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://oauth.pstmn.io/v1/callback",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "2"
+              ]
+            },
+            "description": "Uitvoeren met het token van test2 op een bestaande entry van test. Verwacht: 404 Not Found. Controleer daarna als test dat de entry nog bestaat en ongewijzigd is."
+          },
+          "response": []
+        },
+        {
+          "name": "Kaarten ophalen zonder vereiste rol",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "value": "PokemonCardCollection",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth",
+                  "type": "string"
+                },
+                {
+                  "key": "tokenName",
+                  "value": "Pokemon API zonder rol",
+                  "type": "string"
+                },
+                {
+                  "key": "addTokenTo",
+                  "value": "header",
+                  "type": "string"
+                },
+                {
+                  "key": "clientSecret",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "scope",
+                  "value": "openid",
+                  "type": "string"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://oauth.pstmn.io/v1/callback",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pokemoncards",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pokemoncards"
+              ]
+            },
+            "description": "Uitvoeren met een geldig token van test-no-role. Deze gebruiker heeft geen clientrol USER. Verwacht: 403 Forbidden."
+          },
+          "response": []
+        },
+        {
+          "name": "Alle lokale gebruikers ophalen (ADMIN)",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "value": "PokemonCardCollection",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth",
+                  "type": "string"
+                },
+                {
+                  "key": "tokenName",
+                  "value": "Pokemon API admin",
+                  "type": "string"
+                },
+                {
+                  "key": "addTokenTo",
+                  "value": "header",
+                  "type": "string"
+                },
+                {
+                  "key": "clientSecret",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "scope",
+                  "value": "openid",
+                  "type": "string"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://oauth.pstmn.io/v1/callback",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users"
+              ]
+            },
+            "description": "Haalt alle lokale gebruikers op. Voor de gebruiker vereist de ADMIN-clientrol. Zonder token: 401. Met alleen USER: 403. Met ADMIN: 200."
+          },
+          "response": []
+        },
+        {
+          "name": "Kaarten ophalen zonder token",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/pokemoncards",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pokemoncards"
+              ]
+            },
+            "description": "Haalt Pokémonkaarten op zonder token. Verwacht: 401 Unauthorized, omdat authenticatie verplicht is."
+          },
+          "response": []
+        },
+        {
+          "name": "Gebruikers ophalen zonder token",
+          "request": {
+            "auth": {
+              "type": "noauth"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users"
+              ]
+            },
+            "description": "Probeert het gebruikersoverzicht zonder token op te halen. Verwacth: 401 Unauthorized omdat authenticatie verplicht is"
+          },
+          "response": []
+        },
+        {
+          "name": "Gebruikers ophalen als USER",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/admin/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users"
+              ]
+            },
+            "description": "Probeert het gebruikersoverzicht op te halen als test met alleen de USER clientrol. Verwacht: 403 Forbidden omdat de ADMIN clientrol vereist is."
+          },
+          "response": []
+        },
+        {
+          "name": "Eigen collectie ophalen als test2",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "value": "PokemonCardCollection",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth",
+                  "type": "string"
+                },
+                {
+                  "key": "addTokenTo",
+                  "value": "header",
+                  "type": "string"
+                },
+                {
+                  "key": "clientSecret",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "scope",
+                  "value": "openid",
+                  "type": "string"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://oauth.pstmn.io/v1/callback",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries"
+              ]
+            },
+            "description": "Haalt de collectie van test2 op. Verwacht: 200 OK met allen de eigen entries. Entries van test mogen niet voorkomen en de lijst mag leeg zijn."
+          },
+          "response": []
+        },
+        {
+          "name": "Eigen favorieten ophalen als test2",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "value": "PokemonCardCollection",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth",
+                  "type": "string"
+                },
+                {
+                  "key": "addTokenTo",
+                  "value": "header",
+                  "type": "string"
+                },
+                {
+                  "key": "clientSecret",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "scope",
+                  "value": "openid",
+                  "type": "string"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://oauth.pstmn.io/v1/callback",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/favorites",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "favorites"
+              ]
+            },
+            "description": "Haalt de favorieten van test2 op. Verwacht: 200 OK met alleen de eigen favorieten. Favoriet 2 van test mag niet voorkomen."
+          },
+          "response": []
+        },
+        {
+          "name": "Favoriet van test verwijderen als test2",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "value": "PokemonCardCollection",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth",
+                  "type": "string"
+                },
+                {
+                  "key": "addTokenTo",
+                  "value": "header",
+                  "type": "string"
+                },
+                {
+                  "key": "clientSecret",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "scope",
+                  "value": "openid",
+                  "type": "string"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://oauth.pstmn.io/v1/callback",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/favorites/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "favorites",
+                "2"
+              ]
+            },
+            "description": "probeert als test2 favoriet 2 van test te verwijderen. Verwacht: 404 Not Found. De favoriet van test blijft bestaan."
+          },
+          "response": []
+        },
+        {
+          "name": "Profiel ophalen als test2 zonder eigen profiel",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "value": "PokemonCardCollection",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth",
+                  "type": "string"
+                },
+                {
+                  "key": "addTokenTo",
+                  "value": "header",
+                  "type": "string"
+                },
+                {
+                  "key": "clientSecret",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "scope",
+                  "value": "openid",
+                  "type": "string"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://oauth.pstmn.io/v1/callback",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles"
+              ]
+            },
+            "description": "test 2 heeft geen eigen profiel, Verwacht: 404 Not Found. Het profiel van test mag niet worden teruggegeven."
+          },
+          "response": []
+        },
+        {
+          "name": "Profiel van test verwijderen als test2",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "value": "PokemonCardCollection",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth",
+                  "type": "string"
+                },
+                {
+                  "key": "addTokenTo",
+                  "value": "header",
+                  "type": "string"
+                },
+                {
+                  "key": "clientSecret",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "scope",
+                  "value": "openid",
+                  "type": "string"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://oauth.pstmn.io/v1/callback",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles",
+                "2"
+              ]
+            },
+            "description": "Prbeert als test2 profiel 2 van test te verwijderen. Verwacht 404 Not Found. Het profiel van test blijft gewoon bestaan."
+          },
+          "response": []
+        },
+        {
+          "name": "Profiel wijzigen als test2 zonder eigen profiel",
+          "request": {
+            "auth": {
+              "type": "oauth2",
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "value": "PokemonCardCollection",
+                  "type": "string"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token",
+                  "type": "string"
+                },
+                {
+                  "key": "authUrl",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth",
+                  "type": "string"
+                },
+                {
+                  "key": "addTokenTo",
+                  "value": "header",
+                  "type": "string"
+                },
+                {
+                  "key": "clientSecret",
+                  "value": "",
+                  "type": "string"
+                },
+                {
+                  "key": "scope",
+                  "value": "openid",
+                  "type": "string"
+                },
+                {
+                  "key": "redirect_uri",
+                  "value": "https://oauth.pstmn.io/v1/callback",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n  \"displayName\": \"Ongewenste wijziging\",\r\n  \"country\": \"België\",\r\n  \"gender\": \"OTHER\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles"
+              ]
+            },
+            "description": "Probeert als tes2 een profiel te wijzigen met een geldige bode. Verwacht 404 Not Found. Omdat test2 geen eigen profiel heeft. Het profiel van test bijft ongewijzigd."
+          },
+          "response": []
+        },
+        {
+          "name": "Eigen entry intact na wijzi en verwijder pogingen",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/collectionentries/2",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "2"
+              ]
+            },
+            "description": "Controleert als test dat entry 2 na de pogingen van test2 nog steeds bestaat. Verwacht: 200 OK met quantity 2 en condition MINT."
+          },
+          "response": []
+        },
+        {
+          "name": "Eigen profiel intact na wijzig en verwijderpogingen",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/userprofiles",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "userprofiles"
+              ]
+            },
+            "description": "Controleert als test dat profiel 2 na de poginen van test2 nog bestaat en ongewijzigd is. Verwacht: 200 OK met displayName 'Test verzamelaar', country 'Nederland', gender 'OTHER'"
+          },
+          "response": []
+        },
+        {
+          "name": "Eigen favoriet intact na verwijderpoging",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/favorites",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "favorites"
+              ]
+            },
+            "description": "Controleert als test dat favoriet 2 na de verwijderpoging van test2 nog bestaat. Verwacht: 200 OK met favoriet 2 en pokemonCardId 1 in de lijst."
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "oauth2",
+    "oauth2": [
+      {
+        "key": "accessToken",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "tokenType",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "token_id",
+        "value": "10f9593f-5208-4450-838e-b8a0ff73f477",
+        "type": "string"
+      },
+      {
+        "key": "timestamp",
+        "value": 1791531921409,
+        "type": "number"
+      },
+      {
+        "key": "expires_in",
+        "value": 300,
+        "type": "number"
+      },
+      {
+        "key": "addTokenTo",
+        "value": "header",
+        "type": "string"
+      },
+      {
+        "key": "redirect_uri",
+        "value": "https://oauth.pstmn.io/v1/callback",
+        "type": "string"
+      },
+      {
+        "key": "id",
+        "value": "collection/22ab4746-8e79-4e51-afce-5c17b43cae11/2f820c8b-c985-4032-817b-4eed56220c2c",
+        "type": "string"
+      },
+      {
+        "key": "authUrl",
+        "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth",
+        "type": "string"
+      },
+      {
+        "key": "accessTokenUrl",
+        "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token",
+        "type": "string"
+      },
+      {
+        "key": "clientId",
+        "value": "PokemonCardCollection",
+        "type": "string"
+      },
+      {
+        "key": "clientSecret",
+        "value": "",
+        "type": "string"
+      },
+      {
+        "key": "scope",
+        "value": "openid",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ]
+}

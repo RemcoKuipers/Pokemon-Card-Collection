@@ -49,6 +49,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/pokemoncards", "/pokemoncards/**").hasRole("USER")
                         .requestMatchers("/collectionentries", "/collectionentries/**").hasRole("USER")
+                        .requestMatchers("/favorites", "/favorites/**").hasRole("USER")
+                        .requestMatchers("/userprofiles", "/userprofiles/**").hasRole("USER")
                         .requestMatchers("/admin/users").hasRole("ADMIN")
                         .anyRequest().denyAll()
                 )

@@ -35,6 +35,9 @@ public class CurrentUserService {
 
     private User createLocalUser(Jwt jwt) {
         String username = jwt.getClaimAsString("preferred_username");
+        if (username == null || username.isBlank()) {
+            throw new IncompleteUserAccountException("No username found");
+        }
         String email = jwt.getClaimAsString("email");
         String keycloakId = jwt.getSubject();
         if (email == null || email.isBlank()) {

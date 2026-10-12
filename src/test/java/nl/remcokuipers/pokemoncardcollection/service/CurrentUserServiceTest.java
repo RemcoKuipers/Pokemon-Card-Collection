@@ -150,7 +150,7 @@ class CurrentUserServiceTest {
     }
 
     @Test
-    void GetCurrentUser_zonderJwtPrincipal_gooitIncompleteUserAccountException(){
+    void GetCurrentUser_zonderJwtPrincipal_gooitIncompleteUserAccountException() {
         // Arrange
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken("testgebruiker", "test")
@@ -162,5 +162,50 @@ class CurrentUserServiceTest {
                 () -> currentUserService.getCurrentUser()
         );
         verifyNoInteractions(userRepository);
+    }
+
+    @Test
+    void getCurrentUser_zonderUsername_gooitIncompleteUserAccountException() {
+        // Arrange
+        Jwt jwt = Jwt.withTokenValue("test-token")
+                .header("alg", "RS256")
+                .subject("keycloak-test-id")
+                .claim("email", "testgebruiker@example.com")
+                .build();
+
+        SecurityContextHolder.getContext()
+                .setAuthentication(new JwtAuthenticationToken(jwt));
+        when(userRepository.findByKeycloakId("keycloak-test-id"))
+                .thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(
+                IncompleteUserAccountException.class,
+                () -> currentUserService.getCurrentUser()
+        );
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void getCurrentUser_metLegeUsername_gooitIncompleteUserAccountException() {
+        // Arrange
+        Jwt jwt = Jwt.withTokenValue("test-token")
+                .header("alg", "RS256")
+                .subject("keycloak-test-id")
+                .claim("preferred_username", " ")
+                .claim("email", "testgebruiker@example.com")
+                .build();
+
+        SecurityContextHolder.getContext()
+                .setAuthentication(new JwtAuthenticationToken(jwt));
+        when(userRepository.findByKeycloakId("keycloak-test-id"))
+                .thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(
+                IncompleteUserAccountException.class,
+                () -> currentUserService.getCurrentUser()
+        );
+        verify(userRepository, never()).save(any(User.class));
     }
 }

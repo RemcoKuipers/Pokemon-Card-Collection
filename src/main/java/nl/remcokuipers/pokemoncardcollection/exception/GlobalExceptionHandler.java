@@ -36,5 +36,13 @@ public class GlobalExceptionHandler {
             (DuplicateResourceException exception) {
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(IncompleteUserAccountException.class)
+    public ResponseEntity<Map<String, String>> handleIncompleteUserAccountException(IncompleteUserAccountException exception) {
+        return new ResponseEntity<>(
+                Map.of("message", exception.getMessage()),
+                HttpStatus.FORBIDDEN
+        );
+    }
 }
 

@@ -2,6 +2,7 @@ package nl.remcokuipers.pokemoncardcollection.service;
 
 
 import nl.remcokuipers.pokemoncardcollection.entity.User;
+import nl.remcokuipers.pokemoncardcollection.exception.IncompleteUserAccountException;
 import nl.remcokuipers.pokemoncardcollection.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
@@ -36,6 +37,10 @@ public class CurrentUserService {
         String username = jwt.getClaimAsString("preferred_username");
         String email = jwt.getClaimAsString("email");
         String keycloakId = jwt.getSubject();
+        if (email == null || email.isBlank()) {
+            throw new IncompleteUserAccountException(
+                    "No email found");
+        }
         User user = new User(username, email);
         user.setKeycloakId(keycloakId);
         return userRepository.save(user);

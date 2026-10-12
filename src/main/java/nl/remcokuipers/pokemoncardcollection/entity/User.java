@@ -17,8 +17,6 @@ public class User {
     @Column(unique = true, nullable = false)
     private String email;
     @Column(nullable = false)
-    private String password;
-    @Column(nullable = false)
     private Boolean enabled = true;
     @Column(unique = true, nullable = false)
     private String keycloakId;
@@ -26,10 +24,9 @@ public class User {
     public User() {
     }
 
-    public User(String username, String email, String password) {
+    public User(String username, String email) {
         this.username = username;
         this.email = email;
-        this.password = password;
     }
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -54,14 +51,6 @@ public class User {
 
     public void setEnabled(Boolean enabled) {
         this.enabled = enabled;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public String getUsername() {

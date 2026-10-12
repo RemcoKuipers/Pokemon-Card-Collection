@@ -13,6 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
@@ -132,5 +134,33 @@ class CurrentUserServiceTest {
         // Assert
         assertSame(bestaandeUser, result);
         verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void getCurrentUser_zonderAuthenticatie_gooitAuthenticationCredentialsNotFoundException() {
+        // Arrange
+        SecurityContextHolder.clearContext();
+
+        // Act & Assert
+        assertThrows(
+                AuthenticationCredentialsNotFoundException.class,
+                () -> currentUserService.getCurrentUser()
+        );
+        verifyNoInteractions(userRepository);
+    }
+
+    @Test
+    void GetCurrentUser_zonderJwtPrincipal_gooitIncompleteUserAccountException(){
+        // Arrange
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken("testgebruiker", "test")
+        );
+
+        // Act & Assert
+        assertThrows(
+                AuthenticationCredentialsNotFoundException.class,
+                () -> currentUserService.getCurrentUser()
+        );
+        verifyNoInteractions(userRepository);
     }
 }

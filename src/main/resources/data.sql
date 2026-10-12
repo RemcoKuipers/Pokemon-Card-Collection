@@ -6,14 +6,12 @@ VALUES ('test-pikachu-001',
         'Common',
         'Testset');
 
-INSERT INTO users (username, email, enabled, keycloak_id)
+INSERT INTO users (username, email, keycloak_id)
 VALUES ('testuser',
         'testuser@example.com',
-        true,
         'fc91f345-48a3-45f6-bafa-f32188145337');
 
-INSERT INTO users (username, email, enabled, keycloak_id)
+INSERT INTO users (username, email, keycloak_id)
 VALUES ('test2',
         'test2@example.com',
-        true,
         'e345da06-d697-493c-9a6d-0d31bf94aba3');

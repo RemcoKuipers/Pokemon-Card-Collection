@@ -2,7 +2,6 @@ package nl.remcokuipers.pokemoncardcollection.service;
 
 
 import nl.remcokuipers.pokemoncardcollection.entity.User;
-import nl.remcokuipers.pokemoncardcollection.exception.ResourceNotFoundException;
 import nl.remcokuipers.pokemoncardcollection.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
@@ -22,15 +21,23 @@ public class CurrentUserService {
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null
-                || !(authentication.getPrincipal() instanceof Jwt jwt)){
+                || !(authentication.getPrincipal() instanceof Jwt jwt)) {
             throw new AuthenticationCredentialsNotFoundException(
                     "No authenticated JWT found");
         }
 
         String keycloakId = jwt.getSubject();
         User user = userRepository.findByKeycloakId(keycloakId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException("Local user not found for authenticated user"));
+                .orElseGet(() -> createLocalUser(jwt));
         return user;
+    }
+
+    private User createLocalUser(Jwt jwt) {
+        String username = jwt.getClaimAsString("preferred_username");
+        String email = jwt.getClaimAsString("email");
+        String keycloakId = jwt.getSubject();
+        User user = new User(username, email);
+        user.setKeycloakId(keycloakId);
+        return userRepository.save(user);
     }
 }

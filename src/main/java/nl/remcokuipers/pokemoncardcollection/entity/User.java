@@ -2,9 +2,6 @@ package nl.remcokuipers.pokemoncardcollection.entity;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
 @Table(name = "users")
 
@@ -27,14 +24,6 @@ public class User {
         this.email = email;
     }
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(
-            name = "user_roles",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
-    private Set<Role> roles = new HashSet<>();
-
     public String getEmail() {
         return email;
     }
@@ -55,10 +44,6 @@ public class User {
         return id;
     }
 
-    public Set<Role> getRoles() {
-        return roles;
-    }
-
     public String getKeycloakId() {
         return keycloakId;
     }
@@ -67,7 +52,4 @@ public class User {
         this.keycloakId = keycloakId;
     }
 
-    public void setRoles(Set<Role> roles) {
-        this.roles = roles;
-    }
 }

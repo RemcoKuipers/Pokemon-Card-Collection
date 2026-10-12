@@ -2,6 +2,7 @@ package nl.remcokuipers.pokemoncardcollection.service;
 
 
 import nl.remcokuipers.pokemoncardcollection.entity.User;
+import nl.remcokuipers.pokemoncardcollection.exception.DuplicateResourceException;
 import nl.remcokuipers.pokemoncardcollection.exception.IncompleteUserAccountException;
 import nl.remcokuipers.pokemoncardcollection.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
@@ -39,11 +40,17 @@ public class CurrentUserService {
             throw new IncompleteUserAccountException("No username found");
         }
         String email = jwt.getClaimAsString("email");
-        String keycloakId = jwt.getSubject();
         if (email == null || email.isBlank()) {
             throw new IncompleteUserAccountException(
                     "No email found");
         }
+        if (userRepository.existsByUsername(username)) {
+            throw new DuplicateResourceException("Username is already in use");
+        }
+        if (userRepository.existsByEmail(email)) {
+            throw new DuplicateResourceException("Email is already in use");
+        }
+        String keycloakId = jwt.getSubject();
         User user = new User(username, email);
         user.setKeycloakId(keycloakId);
         return userRepository.save(user);

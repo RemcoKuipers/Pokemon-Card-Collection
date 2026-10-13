@@ -13,8 +13,10 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> handleResourceNotFoundException(ResourceNotFoundException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.NOT_FOUND);
+    public ResponseEntity<Map<String, String>> handleResourceNotFoundException(ResourceNotFoundException exception) {
+        return new ResponseEntity<>(
+                Map.of("message", exception.getMessage()),
+                HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -32,9 +34,19 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(DuplicateResourceException.class)
-    public ResponseEntity<String> handleDuplicateResourceException
+    public ResponseEntity<Map<String, String>> handleDuplicateResourceException
             (DuplicateResourceException exception) {
-        return new ResponseEntity<>(exception.getMessage(), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(
+                Map.of("message", exception.getMessage()),
+                HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(IncompleteUserAccountException.class)
+    public ResponseEntity<Map<String, String>> handleIncompleteUserAccountException(IncompleteUserAccountException exception) {
+        return new ResponseEntity<>(
+                Map.of("message", exception.getMessage()),
+                HttpStatus.FORBIDDEN
+        );
     }
 }
 

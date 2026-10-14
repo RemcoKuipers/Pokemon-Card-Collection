@@ -60,11 +60,21 @@ public class CollectionEntryService {
         return collectionEntryMapper.mapToResponseDTO(savedCollectionEntry);
     }
 
-    public List<CollectionEntryResponseDTO> getCollectionEntriesByUser(User user) {
-        List<CollectionEntry> collectionEntries = collectionEntryRepository.findByUser(user);
+    public List<CollectionEntryResponseDTO> getCollectionEntriesByUser(User user, String name, String setName, String rarity) {
+        List<CollectionEntry> collectionEntries;
+        if(name == null || name.isBlank()) {
+            collectionEntries = collectionEntryRepository.findByUser(user);
+        }else {
+           collectionEntries = collectionEntryRepository.findByUserAndPokemonCardNameContainingIgnoreCase(user, name);
+        }
 
         return collectionEntries
                 .stream()
+                .filter(entry -> setName == null || setName.isBlank()
+                || entry.getPokemonCard().getSetName().equalsIgnoreCase(setName))
+                .filter(entry -> rarity == null || rarity.isBlank()
+                || entry.getPokemonCard().getRarity().equalsIgnoreCase(rarity))
+
                 .map(collectionEntryMapper::mapToResponseDTO)
                 .toList();
 

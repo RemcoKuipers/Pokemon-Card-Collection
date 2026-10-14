@@ -13,6 +13,6 @@ public interface CollectionEntryRepository extends JpaRepository<CollectionEntry
     List<CollectionEntry> findByUser(User user);
     Optional<CollectionEntry> findByIdAndUser(Long id, User user);
     Optional<CollectionEntry> findByUserAndPokemonCardAndCondition(User user, PokemonCard pokemonCard, Condition condition);
-
     Condition condition(Condition condition);
+    List<CollectionEntry> findByUserAndPokemonCardNameContainingIgnoreCase(User user, String name);
 }

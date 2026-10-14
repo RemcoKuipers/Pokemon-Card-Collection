@@ -1,5 +1,6 @@
 package nl.remcokuipers.pokemoncardcollection.service;
 
+import jakarta.transaction.Transactional;
 import nl.remcokuipers.pokemoncardcollection.dto.CollectionEntryRequestDTO;
 import nl.remcokuipers.pokemoncardcollection.dto.CollectionEntryResponseDTO;
 import nl.remcokuipers.pokemoncardcollection.dto.CollectionEntryUpdateDTO;
@@ -62,18 +63,18 @@ public class CollectionEntryService {
 
     public List<CollectionEntryResponseDTO> getCollectionEntriesByUser(User user, String name, String setName, String rarity) {
         List<CollectionEntry> collectionEntries;
-        if(name == null || name.isBlank()) {
+        if (name == null || name.isBlank()) {
             collectionEntries = collectionEntryRepository.findByUser(user);
-        }else {
-           collectionEntries = collectionEntryRepository.findByUserAndPokemonCardNameContainingIgnoreCase(user, name);
+        } else {
+            collectionEntries = collectionEntryRepository.findByUserAndPokemonCardNameContainingIgnoreCase(user, name);
         }
 
         return collectionEntries
                 .stream()
                 .filter(entry -> setName == null || setName.isBlank()
-                || entry.getPokemonCard().getSetName().equalsIgnoreCase(setName))
+                        || entry.getPokemonCard().getSetName().equalsIgnoreCase(setName))
                 .filter(entry -> rarity == null || rarity.isBlank()
-                || entry.getPokemonCard().getRarity().equalsIgnoreCase(rarity))
+                        || entry.getPokemonCard().getRarity().equalsIgnoreCase(rarity))
 
                 .map(collectionEntryMapper::mapToResponseDTO)
                 .toList();
@@ -91,10 +92,12 @@ public class CollectionEntryService {
         return collectionEntryMapper.mapToResponseDTO(collectionEntry);
     }
 
+    @Transactional
     public CollectionEntryResponseDTO updateCollectionEntry(
             Long id,
             CollectionEntryUpdateDTO dto,
             User user) {
+
         CollectionEntry collectionEntry =
                 collectionEntryRepository.findByIdAndUser(id, user)
                         .orElseThrow(() ->
@@ -102,6 +105,20 @@ public class CollectionEntryService {
                                         "Collection entry with ID " + id + " not found."
                                 )
                         );
+        Optional<CollectionEntry> existingEntry = collectionEntryRepository.findByUserAndPokemonCardAndCondition(
+                user,
+                collectionEntry.getPokemonCard(),
+                dto.condition()
+
+        );
+        if (existingEntry.isPresent()
+                && !existingEntry.get().getId().equals(collectionEntry.getId())) {
+            CollectionEntry targetEntry = existingEntry.get();
+            targetEntry.setQuantity(targetEntry.getQuantity() + dto.quantity());
+            targetEntry = collectionEntryRepository.save(targetEntry);
+            collectionEntryRepository.delete(collectionEntry);
+            return collectionEntryMapper.mapToResponseDTO(targetEntry);
+        }
         collectionEntry.setQuantity(dto.quantity());
         collectionEntry.setCondition(dto.condition());
 

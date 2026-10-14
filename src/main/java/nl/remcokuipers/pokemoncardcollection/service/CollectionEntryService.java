@@ -13,6 +13,7 @@ import nl.remcokuipers.pokemoncardcollection.repository.PokemonCardRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CollectionEntryService {
@@ -38,6 +39,18 @@ public class CollectionEntryService {
                                 "Pokemon Card Not Found with ID: " + dto.pokemonCardId()
                         )
                 );
+        Optional<CollectionEntry> existingEntry = collectionEntryRepository.findByUserAndPokemonCardAndCondition(
+                user,
+                pokemonCard,
+                dto.condition()
+        );
+
+        if (existingEntry.isPresent()) {
+            CollectionEntry collectionEntry = existingEntry.get();
+            collectionEntry.setQuantity(collectionEntry.getQuantity() + dto.quantity());
+            CollectionEntry savedCollectionEntry = collectionEntryRepository.save(collectionEntry);
+            return collectionEntryMapper.mapToResponseDTO(savedCollectionEntry);
+        }
 
         CollectionEntry collectionEntry =
                 collectionEntryMapper.mapToEntity(user, pokemonCard, dto);
@@ -86,7 +99,7 @@ public class CollectionEntryService {
         return collectionEntryMapper.mapToResponseDTO(savedCollectionEntry);
     }
 
-    public void  deleteCollectionEntry(Long id, User user) {
+    public void deleteCollectionEntry(Long id, User user) {
         CollectionEntry collectionEntry =
                 collectionEntryRepository.findByIdAndUser(id, user)
                         .orElseThrow(() ->

@@ -378,5 +378,35 @@ class CollectionEntryServiceTest {
         verify(collectionEntryMapper, never())
                 .mapToResponseDTO(any(CollectionEntry.class));
     }
+
+    @Test
+    void deleteCollectionEntry_verwijderEigenEntry(){
+        // Arrange
+        User user = new User();
+        PokemonCard pokemonCard = new PokemonCard();
+        CollectionEntry collectionEntry = new CollectionEntry(2, Condition.MINT, user, pokemonCard);
+        when(collectionEntryRepository.findByIdAndUser(1L, user))
+        .thenReturn(Optional.of(collectionEntry));
+
+        // Act
+        collectionEntryService.deleteCollectionEntry(1L, user);
+
+        // Assert
+        verify(collectionEntryRepository).delete(collectionEntry);
+    }
+
+    @Test
+    void deleteCollectionEntry_gooitExceptionAlsEntryNietGevonden() {
+        // Arrange
+        User user = new User();
+        when(collectionEntryRepository.findByIdAndUser(1L, user))
+                .thenReturn(Optional.empty());
+
+        // Act
+        assertThrows(ResourceNotFoundException.class, () -> collectionEntryService.deleteCollectionEntry(1L, user));
+
+        // Assert
+        verify(collectionEntryRepository, never()).delete(any(CollectionEntry.class));
+    }
 }
 

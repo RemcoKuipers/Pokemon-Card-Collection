@@ -286,5 +286,61 @@ class CollectionEntryServiceTest {
         verify(collectionEntryMapper, never()).mapToResponseDTO(entry2);
     }
 
+    @Test
+    void getCollectionEntriesByUser_filtertOpNaam() {
+        // Arrange
+        User user = new User();
+        PokemonCard pokemonCard = new PokemonCard();
+        CollectionEntry collectionEntry = new CollectionEntry(2, Condition.MINT, user, pokemonCard);
 
+        when(collectionEntryRepository.findByUserAndPokemonCardNameContainingIgnoreCase(user, "pika"))
+                .thenReturn(List.of(collectionEntry));
+        CollectionEntryResponseDTO expectedResponse = new CollectionEntryResponseDTO(1L, 1L, 2, Condition.MINT);
+        when(collectionEntryMapper.mapToResponseDTO(collectionEntry))
+                .thenReturn(expectedResponse);
+
+        // Act
+        List<CollectionEntryResponseDTO> actualResponse = collectionEntryService.getCollectionEntriesByUser(user, "pika", null, null);
+
+        // Assert
+        assertEquals(List.of(expectedResponse), actualResponse);
+        verify(collectionEntryRepository)
+                .findByUserAndPokemonCardNameContainingIgnoreCase(user, "pika");
+        verify(collectionEntryRepository, never()).findByUser(user);
+
+    }
+
+    @Test
+    void getCollectionEntriesByUser_combineertSetEnZeldzaamheid() {
+        // Arrange
+        User user = new User();
+        PokemonCard pokemonCard = new PokemonCard();
+        pokemonCard.setSetName("Testset");
+        pokemonCard.setRarity("Common");
+        PokemonCard rareCard = new PokemonCard();
+        rareCard.setSetName("Testset");
+        rareCard.setRarity("Rare");
+        PokemonCard otherPokemonCard = new PokemonCard();
+        otherPokemonCard.setSetName("AndereSet");
+        otherPokemonCard.setRarity("Common");
+
+        CollectionEntry entry1 = new CollectionEntry(2, Condition.MINT, user, pokemonCard);
+        CollectionEntry entry2 = new CollectionEntry(3, Condition.MINT, user, rareCard);
+        CollectionEntry entry3 = new CollectionEntry(4, Condition.MINT, user, otherPokemonCard);
+
+        when(collectionEntryRepository.findByUser(user))
+                .thenReturn(List.of(entry1, entry2, entry3));
+        CollectionEntryResponseDTO expectedResponse = new CollectionEntryResponseDTO(1L, 1L, 2, Condition.MINT);
+        when(collectionEntryMapper.mapToResponseDTO(entry1))
+                .thenReturn(expectedResponse);
+
+        // Act
+        List<CollectionEntryResponseDTO> actualResponse = collectionEntryService.getCollectionEntriesByUser(user, null, "testset", "common");
+
+        // Assert
+        assertEquals(List.of(expectedResponse), actualResponse);
+        verify(collectionEntryMapper, never()).mapToResponseDTO(entry2);
+        verify(collectionEntryMapper, never()).mapToResponseDTO(entry3);
+    }
 }
+

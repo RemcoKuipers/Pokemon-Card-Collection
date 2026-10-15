@@ -342,5 +342,41 @@ class CollectionEntryServiceTest {
         verify(collectionEntryMapper, never()).mapToResponseDTO(entry2);
         verify(collectionEntryMapper, never()).mapToResponseDTO(entry3);
     }
+
+    @Test
+    void getCollectionEntryById_geeftEigenEntryTerug() {
+        // Arrange
+        User user = new User();
+        PokemonCard pokemonCard = new PokemonCard();
+        CollectionEntry collectionEntry = new CollectionEntry(2, Condition.MINT, user, pokemonCard);
+        when(collectionEntryRepository.findByIdAndUser(1L, user))
+                .thenReturn(Optional.of(collectionEntry));
+
+        CollectionEntryResponseDTO expectedResponse = new CollectionEntryResponseDTO(1L, 1L, 2, Condition.MINT);
+        when(collectionEntryMapper.mapToResponseDTO(collectionEntry))
+                .thenReturn(expectedResponse);
+
+        // Act
+        CollectionEntryResponseDTO actualResponse = collectionEntryService.getCollectionEntryById(1L, user);
+
+        // Assert
+        assertEquals(expectedResponse, actualResponse);
+        verify(collectionEntryRepository).findByIdAndUser(1L, user);
+    }
+
+    @Test
+    void getCollectionEntryById_gooitExceptionAlsEntryNietGevonden() {
+        // Arrange
+        User user = new User();
+        when(collectionEntryRepository.findByIdAndUser(1L, user))
+                .thenReturn(Optional.empty());
+
+        // Act
+        assertThrows(ResourceNotFoundException.class, () -> collectionEntryService.getCollectionEntryById(1L, user));
+
+        // Assert
+        verify(collectionEntryMapper, never())
+                .mapToResponseDTO(any(CollectionEntry.class));
+    }
 }
 

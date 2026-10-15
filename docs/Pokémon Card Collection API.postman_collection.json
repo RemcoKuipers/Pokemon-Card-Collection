@@ -1760,6 +1760,119 @@
         }
       ],
       "name": "Securitytests"
+    },
+    {
+      "item": [
+        {
+          "name": "Voeg kaart toe aantal 2",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\r\n    \"pokemonCardId\": 1,\r\n    \"quantity\": 2,\r\n    \"condition\": \"MINT\"\r\n}"
+            },
+            "description": "Voegd een kaart toe aan collectie, ik verwacht een status: 201 Created met als return het json object met de toegevoegde collectie.",
+            "header": [],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries"
+              ],
+              "raw": "{{baseUrl}}/collectionentries"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Zelfde kaart en conditie voeg 3 toe",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\r\n    \"pokemonCardId\": 1,\r\n    \"quantity\": 3,\r\n    \"condition\": \"MINT\"\r\n}"
+            },
+            "description": "Voegd een kaart toe aan collectie, ik verwacht een status: 201 Created met als return het json object met de toegevoegde collectie.",
+            "header": [],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries"
+              ],
+              "raw": "{{baseUrl}}/collectionentries"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Zelfde kaart andere conditie voeg 1 toe",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\r\n    \"pokemonCardId\": 1,\r\n    \"quantity\": 1,\r\n    \"condition\": \"GOOD\"\r\n}"
+            },
+            "description": "Voegd een kaart toe aan collectie, ik verwacht een status: 201 Created met als return het json object met de toegevoegde collectie.",
+            "header": [],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries"
+              ],
+              "raw": "{{baseUrl}}/collectionentries"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Zelfde kaart  voeg 1 toe met andere gebruiker",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\r\n    \"pokemonCardId\": 1,\r\n    \"quantity\": 1,\r\n    \"condition\": \"MINT\"\r\n}"
+            },
+            "description": "Voegd een kaart toe aan collectie, ik verwacht een status: 201 Created met als return het json object met de toegevoegde collectie.",
+            "header": [],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries"
+              ],
+              "raw": "{{baseUrl}}/collectionentries"
+            }
+          },
+          "response": []
+        }
+      ],
+      "name": "Collectie quantity verhogen"
     }
   ],
   "variable": [

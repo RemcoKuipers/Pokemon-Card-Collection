@@ -26,9 +26,12 @@ public class CollectionEntryController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CollectionEntryResponseDTO>> getCollectionEntries() {
+    public ResponseEntity<List<CollectionEntryResponseDTO>> getCollectionEntries(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String setName,
+            @RequestParam(required = false) String rarity) {
         User user = currentUserService.getCurrentUser();
-        return ResponseEntity.ok(collectionEntryService.getCollectionEntriesByUser(user));
+        return ResponseEntity.ok(collectionEntryService.getCollectionEntriesByUser(user, name, setName, rarity));
 
     }
 

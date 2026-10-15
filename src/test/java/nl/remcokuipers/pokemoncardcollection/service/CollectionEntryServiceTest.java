@@ -18,6 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -214,4 +215,76 @@ class CollectionEntryServiceTest {
         assertThrows(ResourceNotFoundException.class, () -> collectionEntryService.addCollectionEntry(dto, user));
         verify(collectionEntryRepository, never()).save(any(CollectionEntry.class));
     }
+
+    @Test
+    void getCollectionEntriesByUser_geeftCollectieTerugZonderFilters() {
+        // Arrange
+        User user = new User();
+        PokemonCard pokemonCard = new PokemonCard();
+        CollectionEntry collectionEntry = new CollectionEntry(2, Condition.MINT, user, pokemonCard);
+        when(collectionEntryRepository.findByUser(user))
+                .thenReturn(List.of(collectionEntry));
+        CollectionEntryResponseDTO expectedResponse = new CollectionEntryResponseDTO(1L, 1L, 2, Condition.MINT);
+        when(collectionEntryMapper.mapToResponseDTO(collectionEntry))
+                .thenReturn(expectedResponse);
+
+        // Act
+        List<CollectionEntryResponseDTO> actualResponse = collectionEntryService.getCollectionEntriesByUser(user, null, null, null);
+
+        // Assert
+        assertEquals(List.of(expectedResponse), actualResponse);
+        verify(collectionEntryRepository).findByUser(user);
+    }
+
+    @Test
+    void getCollectionEntriesByUser_filterOpSet() {
+        // Arrange
+        User user = new User();
+        PokemonCard pokemonCard = new PokemonCard();
+        pokemonCard.setSetName("Testset");
+        PokemonCard otherPokemonCard = new PokemonCard();
+        otherPokemonCard.setSetName("AndereSet");
+        CollectionEntry entry1 = new CollectionEntry(2, Condition.MINT, user, pokemonCard);
+        CollectionEntry entry2 = new CollectionEntry(3, Condition.MINT, user, otherPokemonCard);
+
+        when(collectionEntryRepository.findByUser(user))
+                .thenReturn(List.of(entry1, entry2));
+        CollectionEntryResponseDTO expectedResponse = new CollectionEntryResponseDTO(1L, 1L, 2, Condition.MINT);
+        when(collectionEntryMapper.mapToResponseDTO(entry1))
+                .thenReturn(expectedResponse);
+
+        // Act
+        List<CollectionEntryResponseDTO> actualResponse = collectionEntryService.getCollectionEntriesByUser(user, null, "testset", null);
+
+        // Assert
+        assertEquals(List.of(expectedResponse), actualResponse);
+        verify(collectionEntryMapper, never()).mapToResponseDTO(entry2);
+    }
+
+    @Test
+    void getCollectionEntriesByUser_filterOpZeldzaamheid() {
+        // Arrange
+        User user = new User();
+        PokemonCard pokemonCard = new PokemonCard();
+        pokemonCard.setRarity("Common");
+        PokemonCard otherPokemonCard = new PokemonCard();
+        otherPokemonCard.setRarity("Rare");
+        CollectionEntry entry1 = new CollectionEntry(2, Condition.MINT, user, pokemonCard);
+        CollectionEntry entry2 = new CollectionEntry(3, Condition.MINT, user, otherPokemonCard);
+
+        when(collectionEntryRepository.findByUser(user))
+                .thenReturn(List.of(entry1, entry2));
+        CollectionEntryResponseDTO expectedResponse = new CollectionEntryResponseDTO(1L, 1L, 2, Condition.MINT);
+        when(collectionEntryMapper.mapToResponseDTO(entry1))
+                .thenReturn(expectedResponse);
+
+        // Act
+        List<CollectionEntryResponseDTO> actualResponse = collectionEntryService.getCollectionEntriesByUser(user, null, null, "common");
+
+        // Assert
+        assertEquals(List.of(expectedResponse), actualResponse);
+        verify(collectionEntryMapper, never()).mapToResponseDTO(entry2);
+    }
+
+
 }

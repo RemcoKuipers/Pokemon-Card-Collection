@@ -7,6 +7,7 @@ import nl.remcokuipers.pokemoncardcollection.entity.CollectionEntry;
 import nl.remcokuipers.pokemoncardcollection.entity.PokemonCard;
 import nl.remcokuipers.pokemoncardcollection.entity.User;
 import nl.remcokuipers.pokemoncardcollection.enums.Condition;
+import nl.remcokuipers.pokemoncardcollection.exception.ResourceNotFoundException;
 import nl.remcokuipers.pokemoncardcollection.mapper.CollectionEntryMapper;
 import nl.remcokuipers.pokemoncardcollection.repository.CollectionEntryRepository;
 import nl.remcokuipers.pokemoncardcollection.repository.PokemonCardRepository;
@@ -157,6 +158,7 @@ class CollectionEntryServiceTest {
 
     @Test
     void updateCollectionEntry_wijzigtConditieZonderSamenvoegen() {
+        // Arrange
         User user = new User();
         PokemonCard pokemonCard = new PokemonCard();
         CollectionEntry collectionEntry = new CollectionEntry(3, Condition.GOOD, user, pokemonCard);
@@ -184,5 +186,32 @@ class CollectionEntryServiceTest {
         verify(collectionEntryRepository).save(collectionEntry);
         verify(collectionEntryRepository, never()).delete(any(CollectionEntry.class));
 
+    }
+
+    @Test
+    void updateCollectionEntry_gooitExceptionAlsEntryNietGevonden() {
+        // Arrange
+        User user = new User();
+        CollectionEntryUpdateDTO dto = new CollectionEntryUpdateDTO(4, Condition.MINT);
+        when(collectionEntryRepository.findByIdAndUser(1L, user))
+                .thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class, () -> collectionEntryService.updateCollectionEntry(1L, dto, user));
+        verify(collectionEntryRepository, never()).save(any(CollectionEntry.class));
+        verify(collectionEntryRepository, never()).delete(any(CollectionEntry.class));
+    }
+
+    @Test
+    void addCollectionEntry_gooitExceptionAlsKaartNietGevonden() {
+        // Arrange
+        User user = new User();
+        CollectionEntryRequestDTO dto = new CollectionEntryRequestDTO(1L, 3, Condition.MINT);
+        when(pokemonCardRepository.findById(1L))
+                .thenReturn(Optional.empty());
+
+        // Act & Assert
+        assertThrows(ResourceNotFoundException.class, () -> collectionEntryService.addCollectionEntry(dto, user));
+        verify(collectionEntryRepository, never()).save(any(CollectionEntry.class));
     }
 }

@@ -122,4 +122,67 @@ class CollectionEntryServiceTest {
         verify(collectionEntryRepository).delete(collectionEntry);
         verify(collectionEntryRepository, never()).delete(targetEntry);
     }
+
+    @Test
+    void updateCollectionEntry_wijzigtAantalBijDezelfdeConditie() {
+        // Arrange
+        User user = new User();
+        PokemonCard pokemonCard = new PokemonCard();
+        CollectionEntry collectionEntry = new CollectionEntry(3, Condition.MINT, user, pokemonCard);
+        ReflectionTestUtils.setField(collectionEntry, "id", 1L);
+        CollectionEntryUpdateDTO dto = new CollectionEntryUpdateDTO(4, Condition.MINT);
+
+        when(collectionEntryRepository.findByIdAndUser(1L, user))
+                .thenReturn(Optional.of(collectionEntry));
+        when(collectionEntryRepository.findByUserAndPokemonCardAndCondition(user, pokemonCard, Condition.MINT))
+                .thenReturn(Optional.of(collectionEntry));
+        when(collectionEntryRepository.save(collectionEntry))
+                .thenReturn(collectionEntry);
+
+        CollectionEntryResponseDTO expectedResponse = new CollectionEntryResponseDTO(1L, 1L, 4, Condition.MINT);
+        when(collectionEntryMapper.mapToResponseDTO(collectionEntry))
+                .thenReturn(expectedResponse);
+
+        // Act
+        CollectionEntryResponseDTO actualResponse =
+                collectionEntryService.updateCollectionEntry(1L, dto, user);
+
+        // Assert
+        assertEquals(4, collectionEntry.getQuantity());
+        assertEquals(Condition.MINT, collectionEntry.getCondition());
+        assertEquals(expectedResponse, actualResponse);
+        verify(collectionEntryRepository).save(collectionEntry);
+        verify(collectionEntryRepository, never()).delete(any(CollectionEntry.class));
+    }
+
+    @Test
+    void updateCollectionEntry_wijzigtConditieZonderSamenvoegen() {
+        User user = new User();
+        PokemonCard pokemonCard = new PokemonCard();
+        CollectionEntry collectionEntry = new CollectionEntry(3, Condition.GOOD, user, pokemonCard);
+        ReflectionTestUtils.setField(collectionEntry, "id", 1L);
+        CollectionEntryUpdateDTO dto = new CollectionEntryUpdateDTO(4, Condition.MINT);
+
+        when(collectionEntryRepository.findByIdAndUser(1L, user))
+                .thenReturn(Optional.of(collectionEntry));
+        when(collectionEntryRepository.findByUserAndPokemonCardAndCondition(user, pokemonCard, Condition.MINT))
+                .thenReturn(Optional.empty());
+        when(collectionEntryRepository.save(collectionEntry))
+                .thenReturn(collectionEntry);
+
+        CollectionEntryResponseDTO expectedResponse = new CollectionEntryResponseDTO(1L, 1L, 4, Condition.MINT);
+        when(collectionEntryMapper.mapToResponseDTO(collectionEntry))
+                .thenReturn(expectedResponse);
+
+        // Act
+        CollectionEntryResponseDTO actualResponse = collectionEntryService.updateCollectionEntry(1L, dto, user);
+
+        // Assert
+        assertEquals(4, collectionEntry.getQuantity());
+        assertEquals(Condition.MINT, collectionEntry.getCondition());
+        assertEquals(expectedResponse, actualResponse);
+        verify(collectionEntryRepository).save(collectionEntry);
+        verify(collectionEntryRepository, never()).delete(any(CollectionEntry.class));
+
+    }
 }

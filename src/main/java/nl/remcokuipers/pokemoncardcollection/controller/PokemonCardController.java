@@ -31,4 +31,9 @@ public class PokemonCardController {
         return ResponseEntity.ok(pokemonCard);
     }
 
+    @GetMapping("/external/{externalApiId}")
+    public ResponseEntity<PokemonCardResponseDTO> getPokemonCardByExternalApiId(@PathVariable String externalApiId) {
+        PokemonCardResponseDTO pokemonCard = pokemonCardService.getPokemonCardByExternalApiId(externalApiId);
+        return ResponseEntity.ok(pokemonCard);
+    }
 }

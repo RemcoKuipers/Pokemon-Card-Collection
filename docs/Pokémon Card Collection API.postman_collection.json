@@ -180,6 +180,26 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Kaart ophalen via externe ID",
+          "request": {
+            "description": "Haalt een kaart op via de externe TCGdex-ID.  \nAls de kaart nog niet lokaal bestaat, worden de kaartgegevens  \nbij TCGdex opgehaald en lokaal opgeslagen.\n\nVerwacht: 200 OK met kaartgegevens en een lokale ID.  \nBij herhaald ophalen blijft de lokale ID gelijk.  \nVereist: een geldig USER-token.",
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pokemoncards",
+                "external",
+                "swsh3-136"
+              ],
+              "raw": "{{baseUrl}}/pokemoncards/external/swsh3-136"
+            }
+          },
+          "response": []
         }
       ],
       "name": "PokemonCards"

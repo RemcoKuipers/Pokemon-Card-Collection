@@ -4,7 +4,6 @@ import java.util.List;
 
 public record TcgdexSetResponseDTO(
         String id,
-        String name,
-        List<String> types
+        String name
 ) {
 }

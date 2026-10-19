@@ -48,5 +48,12 @@ public class GlobalExceptionHandler {
                 HttpStatus.FORBIDDEN
         );
     }
+
+    @ExceptionHandler(ExternalApiException.class)
+    public ResponseEntity<Map<String, String>> handleExternalApiException(ExternalApiException exception) {
+        return new ResponseEntity<>(
+                Map.of("message", exception.getMessage()),
+                HttpStatus.SERVICE_UNAVAILABLE);
+    }
 }
 

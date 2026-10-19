@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.core.OAuth2TokenValidatorResult;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.client.RestClient;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -116,6 +117,15 @@ public class SecurityConfig {
                 return OAuth2TokenValidatorResult.success();
             }
             return OAuth2TokenValidatorResult.failure(error);
+        }
+    }
+
+    @Configuration
+    public class RestClientConfig {
+
+        @Bean
+        public RestClient.Builder restClientBuilder() {
+            return RestClient.builder();
         }
     }
 }

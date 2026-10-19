@@ -14,8 +14,10 @@ import org.springframework.web.client.RestClient;
 public class TcgdexClient {
     private final RestClient restClient;
 
-    public TcgdexClient(@Value("${tcgdex.base-url}") String baseUrl) {
-        this.restClient = RestClient.builder()
+    public TcgdexClient(
+            RestClient.Builder builder,
+            @Value("${tcgdex.base-url}") String baseUrl) {
+        this.restClient = builder
                 .baseUrl(baseUrl)
                 .build();
     }

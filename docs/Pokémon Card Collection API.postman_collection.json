@@ -81,7 +81,7 @@
     {
       "item": [
         {
-          "name": "Alle Pokémonkaarten ophalen",
+          "name": "Alle pokemon kaarten opvragen",
           "request": {
             "auth": {
               "oauth2": [
@@ -177,6 +177,96 @@
                 "1"
               ],
               "raw": "{{baseUrl}}/pokemoncards/1"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Kaart ophalen via externe ID",
+          "request": {
+            "description": "Haalt een kaart op via de externe TCGdex-ID.  \nAls de kaart nog niet lokaal bestaat, worden de kaartgegevens  \nbij TCGdex opgehaald en lokaal opgeslagen.\n\nVerwacht: 200 OK met kaartgegevens en een lokale ID.  \nBij herhaald ophalen blijft de lokale ID gelijk.  \nVereist: een geldig USER-token.",
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pokemoncards",
+                "external",
+                "swsh3-136"
+              ],
+              "raw": "{{baseUrl}}/pokemoncards/external/swsh3-136"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Kaarten zoeken op naam",
+          "request": {
+            "auth": {
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "type": "string",
+                  "value": "{{vault:auth_secret_07gb}}"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "type": "string",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token"
+                },
+                {
+                  "key": "authUrl",
+                  "type": "string",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth"
+                },
+                {
+                  "key": "tokenName",
+                  "type": "string",
+                  "value": "Pokemon API testuser"
+                },
+                {
+                  "key": "addTokenTo",
+                  "type": "string",
+                  "value": "header"
+                },
+                {
+                  "key": "clientSecret",
+                  "type": "string",
+                  "value": "{{vault:auth_secret_0oww}}"
+                },
+                {
+                  "key": "scope",
+                  "type": "string",
+                  "value": "openid"
+                },
+                {
+                  "key": "redirect_uri",
+                  "type": "string",
+                  "value": "https://oauth.pstmn.io/v1/callback"
+                }
+              ],
+              "type": "oauth2"
+            },
+            "description": "Zoekt op kaarnaam via de parameter name, hier is een geldig USER token voor vereist. Verwacht: Status 200 OK met als resonse: een lijst van zoekresultaten. Zonder treffers verwacht ik Status 200 OK met als response een lege lijst \\[\\].",
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pokemoncards",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "pikachu"
+                }
+              ],
+              "raw": "{{baseUrl}}/pokemoncards/search?name=pikachu"
             }
           },
           "response": []

@@ -1,12 +1,11 @@
 package nl.remcokuipers.pokemoncardcollection.controller;
 
 import nl.remcokuipers.pokemoncardcollection.dto.PokemonCardResponseDTO;
+import nl.remcokuipers.pokemoncardcollection.dto.TcgdexCardSummaryResponseDTO;
+import nl.remcokuipers.pokemoncardcollection.entity.PokemonCard;
 import nl.remcokuipers.pokemoncardcollection.service.PokemonCardService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,4 +30,15 @@ public class PokemonCardController {
         return ResponseEntity.ok(pokemonCard);
     }
 
+    @GetMapping("/external/{externalApiId}")
+    public ResponseEntity<PokemonCardResponseDTO> getPokemonCardByExternalApiId(@PathVariable String externalApiId) {
+        PokemonCardResponseDTO pokemonCard = pokemonCardService.getPokemonCardByExternalApiId(externalApiId);
+        return ResponseEntity.ok(pokemonCard);
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<TcgdexCardSummaryResponseDTO>> searchByName(@RequestParam String name) {
+        List<TcgdexCardSummaryResponseDTO> cards = pokemonCardService.searchByName(name);
+        return ResponseEntity.ok(cards);
+    }
 }

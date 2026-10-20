@@ -9,7 +9,8 @@ public record TcgdexCardResponseDTO(
         String category,
         String rarity,
         TcgdexSetResponseDTO set,
-        List<String> types
+        List<String> types,
+        TcgdexPricingResponseDTO pricing
 
 ) {
 }

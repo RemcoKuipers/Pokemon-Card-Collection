@@ -270,6 +270,27 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Prijsinformatie ophalen via externe ID",
+          "request": {
+            "description": "Haalt prijsinformatie via externe API op en geeft de Cardmarket prijzen en de verschillen met het 30 daagse gemiddelde terug. Gebruik een geldig USER Token. Verwacht: Status 200 OK met als response: de prijsgegevens en beide berekende verschillen. Bij een ontbrekende Cardmaket prijs verwacht: Status 404 met als response: dat de prijs niet gevonden is.",
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pokemoncards",
+                "external",
+                "swsh3-136",
+                "prices"
+              ],
+              "raw": "{{baseUrl}}/pokemoncards/external/swsh3-136/prices"
+            }
+          },
+          "response": []
         }
       ],
       "name": "PokemonCards"

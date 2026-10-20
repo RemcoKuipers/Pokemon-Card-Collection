@@ -1,5 +1,6 @@
 package nl.remcokuipers.pokemoncardcollection.controller;
 
+import nl.remcokuipers.pokemoncardcollection.dto.PokemonCardPriceResponseDTO;
 import nl.remcokuipers.pokemoncardcollection.dto.PokemonCardResponseDTO;
 import nl.remcokuipers.pokemoncardcollection.dto.TcgdexCardSummaryResponseDTO;
 import nl.remcokuipers.pokemoncardcollection.entity.PokemonCard;
@@ -39,6 +40,12 @@ public class PokemonCardController {
     @GetMapping("/search")
     public ResponseEntity<List<TcgdexCardSummaryResponseDTO>> searchByName(@RequestParam String name) {
         List<TcgdexCardSummaryResponseDTO> cards = pokemonCardService.searchByName(name);
+        return ResponseEntity.ok(cards);
+    }
+
+    @GetMapping("/external/{externalApiId}/prices")
+    public ResponseEntity<PokemonCardPriceResponseDTO> getPokemonCardPriceByExternalApiId(@PathVariable String externalApiId) {
+        PokemonCardPriceResponseDTO cards = pokemonCardService.getPokemonCardPriceByExternalApiId(externalApiId);
         return ResponseEntity.ok(cards);
     }
 }

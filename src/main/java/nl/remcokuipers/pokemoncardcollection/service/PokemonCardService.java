@@ -1,15 +1,14 @@
 package nl.remcokuipers.pokemoncardcollection.service;
 
 import nl.remcokuipers.pokemoncardcollection.client.TcgdexClient;
-import nl.remcokuipers.pokemoncardcollection.dto.PokemonCardResponseDTO;
-import nl.remcokuipers.pokemoncardcollection.dto.TcgdexCardResponseDTO;
-import nl.remcokuipers.pokemoncardcollection.dto.TcgdexCardSummaryResponseDTO;
+import nl.remcokuipers.pokemoncardcollection.dto.*;
 import nl.remcokuipers.pokemoncardcollection.entity.PokemonCard;
 import nl.remcokuipers.pokemoncardcollection.exception.ResourceNotFoundException;
 import nl.remcokuipers.pokemoncardcollection.mapper.PokemonCardMapper;
 import nl.remcokuipers.pokemoncardcollection.repository.PokemonCardRepository;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -61,5 +60,23 @@ public class PokemonCardService {
     public List<TcgdexCardSummaryResponseDTO> searchByName(String name) {
         List<TcgdexCardSummaryResponseDTO> cards = tcgdexClient.searchByName(name);
         return cards;
+    }
+
+    private BigDecimal calculateDifferenceFromAvg30(BigDecimal trend, BigDecimal avg30){
+        if (trend == null || avg30 == null){
+            return null;
+        } else return trend.subtract(avg30);
+    }
+
+    public PokemonCardPriceResponseDTO getPokemonCardPriceByExternalApiId(String externalApiId) {
+        TcgdexCardResponseDTO card = tcgdexClient.getCardById(externalApiId);
+        if (card.pricing() == null || card.pricing().cardmarket() == null){
+            throw new ResourceNotFoundException("Price for PokemonCard with id " + externalApiId + " not found!");
+        }
+        TcgdexCardmarketResponseDTO price = card.pricing().cardmarket();
+        BigDecimal normalDifference = calculateDifferenceFromAvg30(price.trend(), price.avg30());
+        BigDecimal holoDifference = calculateDifferenceFromAvg30(price.trendHolo(), price.avg30Holo());
+
+        return new PokemonCardPriceResponseDTO(externalApiId, price, normalDifference, holoDifference);
     }
 }

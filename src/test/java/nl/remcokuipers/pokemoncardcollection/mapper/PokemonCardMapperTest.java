@@ -18,7 +18,7 @@ class PokemonCardMapperTest {
     void mapToEntity_zetExterneKaartgegevensOm(){
         // Arrange
         TcgdexSetResponseDTO set = new TcgdexSetResponseDTO("swsh3", "Darkness Ablaze");
-        TcgdexCardResponseDTO externalCard = new TcgdexCardResponseDTO("swsh3-136", "136", "Furret", "Pokemon", "Uncommon", set, List.of("Colorless")
+        TcgdexCardResponseDTO externalCard = new TcgdexCardResponseDTO("swsh3-136", "136", "Furret", "Pokemon", "Uncommon", set, List.of("Colorless"), null
         );
 
         // Act
@@ -38,7 +38,7 @@ class PokemonCardMapperTest {
     void mapToEntity_behoudLegeLijstAlsTypesOntbreken(){
         // Arrange
         TcgdexSetResponseDTO set = new TcgdexSetResponseDTO("swsh3", "Darkness Ablaze");
-        TcgdexCardResponseDTO externalCard = new TcgdexCardResponseDTO("swsh3-136", "136", "Furret", "Pokemon", "Uncommon", set, null
+        TcgdexCardResponseDTO externalCard = new TcgdexCardResponseDTO("swsh3-136", "136", "Furret", "Pokemon", "Uncommon", set, null, null
         );
 
         // Act

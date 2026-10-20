@@ -61,7 +61,7 @@ class PokemonCardServiceTest {
         when(pokemonCardRepository.findByExternalApiId("swsh3-136")).thenReturn(Optional.empty());
 
         TcgdexSetResponseDTO set = new TcgdexSetResponseDTO("swsh3", "Darkness Ablaze");
-        TcgdexCardResponseDTO externalCard = new TcgdexCardResponseDTO("swsh3-136", "136", "Furret", "Pokemon", "Uncommon", set, List.of("Colorless")
+        TcgdexCardResponseDTO externalCard = new TcgdexCardResponseDTO("swsh3-136", "136", "Furret", "Pokemon", "Uncommon", set, List.of("Colorless"), null
         );
         when(tcgdexClient.getCardById("swsh3-136")).thenReturn(externalCard);
         when(pokemonCardMapper.mapToEntity(externalCard)).thenReturn(pokemonCard);

@@ -3,6 +3,7 @@ package nl.remcokuipers.pokemoncardcollection.service;
 import nl.remcokuipers.pokemoncardcollection.client.TcgdexClient;
 import nl.remcokuipers.pokemoncardcollection.dto.PokemonCardResponseDTO;
 import nl.remcokuipers.pokemoncardcollection.dto.TcgdexCardResponseDTO;
+import nl.remcokuipers.pokemoncardcollection.dto.TcgdexCardSummaryResponseDTO;
 import nl.remcokuipers.pokemoncardcollection.entity.PokemonCard;
 import nl.remcokuipers.pokemoncardcollection.exception.ResourceNotFoundException;
 import nl.remcokuipers.pokemoncardcollection.mapper.PokemonCardMapper;
@@ -55,5 +56,10 @@ public class PokemonCardService {
         PokemonCard savedPokemonCard = pokemonCardRepository.save(pokemonCard);
 
         return pokemonCardMapper.mapToResponseDTO(savedPokemonCard);
+    }
+
+    public List<TcgdexCardSummaryResponseDTO> searchByName(String name) {
+        List<TcgdexCardSummaryResponseDTO> cards = tcgdexClient.searchByName(name);
+        return cards;
     }
 }

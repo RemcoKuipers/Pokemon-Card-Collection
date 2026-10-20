@@ -1,6 +1,7 @@
 package nl.remcokuipers.pokemoncardcollection.client;
 
 import nl.remcokuipers.pokemoncardcollection.dto.TcgdexCardResponseDTO;
+import nl.remcokuipers.pokemoncardcollection.dto.TcgdexCardSummaryResponseDTO;
 import nl.remcokuipers.pokemoncardcollection.exception.ExternalApiException;
 import nl.remcokuipers.pokemoncardcollection.exception.ResourceNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,6 +13,7 @@ import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestClient;
 
 import java.io.IOException;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.method;
@@ -113,6 +115,37 @@ class TcgdexClientTest {
                 ExternalApiException.class,
                 () -> tcgdexClient.getCardById("swsh3-136")
         );
+        mockServer.verify();
+    }
+
+    @Test
+    void searchByName_geeftkaartenTerug() {
+        // Arrange
+        mockServer.expect(requestTo("https://api.tcgdex.test/v2/en/cards?name=pikachu"))
+                .andExpect(method(HttpMethod.GET))
+                .andRespond(withSuccess("""
+                        [
+                            {
+                                "id": "basep-1",
+                                "localId": "1",
+                                "name": "Pikachu",
+                                "image": "https://assets.tcgdex.net/en/base/basep/1"
+                            },
+                            {
+                                "id": "xyp-XY95",
+                                "localId": "XY95",
+                                "name": "Pikachu",
+                                "image": "https://assets.tcgdex.net/en/xy/xyp/XY95"
+                            }
+                        ]
+                        """, MediaType.APPLICATION_JSON));
+
+        // Act
+        List<TcgdexCardSummaryResponseDTO> result = tcgdexClient.searchByName("pikachu");
+
+        // Assert
+        assertEquals(2, result.size());
+        assertEquals("Pikachu", result.get(0).name());
         mockServer.verify();
     }
 }

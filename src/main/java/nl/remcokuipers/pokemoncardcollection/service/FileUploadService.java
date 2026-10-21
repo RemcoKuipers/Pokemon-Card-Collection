@@ -1,7 +1,11 @@
 package nl.remcokuipers.pokemoncardcollection.service;
 
+import nl.remcokuipers.pokemoncardcollection.dto.FileUploadResponseDTO;
 import nl.remcokuipers.pokemoncardcollection.entity.CollectionEntry;
+import nl.remcokuipers.pokemoncardcollection.entity.FileUpload;
 import nl.remcokuipers.pokemoncardcollection.entity.User;
+import nl.remcokuipers.pokemoncardcollection.enums.FileType;
+import nl.remcokuipers.pokemoncardcollection.exception.FileStorageException;
 import nl.remcokuipers.pokemoncardcollection.exception.InvalidFileException;
 import nl.remcokuipers.pokemoncardcollection.exception.ResourceNotFoundException;
 import nl.remcokuipers.pokemoncardcollection.mapper.FileUploadMapper;
@@ -9,9 +13,17 @@ import nl.remcokuipers.pokemoncardcollection.repository.CollectionEntryRepositor
 import nl.remcokuipers.pokemoncardcollection.repository.FileUploadRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Locale;
+import java.util.UUID;
+
 
 @Service
 public class FileUploadService {
@@ -34,6 +46,11 @@ public class FileUploadService {
         this.currentUserService = currentUserService;
         this.uploadDirectory = Path.of(uploadDir).toAbsolutePath().normalize();
 
+        try {
+            Files.createDirectories(uploadDirectory);
+        } catch (IOException exception) {
+            throw new FileStorageException("Could not create upload directory", exception);
+        }
 
     }
 
@@ -44,7 +61,7 @@ public class FileUploadService {
 
     }
 
-    private void validateFile(MultipartFile file) {
+    private FileType validateFile(MultipartFile file) {
         if (file == null || file.isEmpty()) {
             throw new InvalidFileException("File is empty");
         }
@@ -52,7 +69,54 @@ public class FileUploadService {
         if (!"image/jpeg".equals(contentType) && !"image/png".equals(contentType)) {
             throw new InvalidFileException("Invalid file type");
         }
+        return "image/jpeg".equals(contentType) ? FileType.JPEG : FileType.PNG;
+
     }
 
+    private Path storeFile(MultipartFile file, String storedFileName) {
+        String fileName = storedFileName;
+        Path path = uploadDirectory.resolve(fileName);
+        try (InputStream inputStream = file.getInputStream()) {
+            Files.copy(inputStream, path);
+            return path;
+        } catch (IOException exception) {
+            throw new FileStorageException(
+                    "Could not store uploaded file.",
+                    exception
+            );
+        }
+    }
 
+    private String getOriginalFileName(MultipartFile file) {
+        String fileName = StringUtils.cleanPath(file.getOriginalFilename());
+        if (fileName == null || fileName.isBlank()) {
+            throw new InvalidFileException("File name is empty");
+        }
+        return fileName;
+    }
+
+    public FileUploadResponseDTO uploadFile(Long collectionEntryId, MultipartFile file) {
+        CollectionEntry collectionEntry = getOwnedCollectionEntry(collectionEntryId);
+        FileType fileType = validateFile(file);
+        String originalFileName = getOriginalFileName(file);
+        String storedFileName = UUID.randomUUID().toString() + "." + fileType.name().toLowerCase(Locale.ROOT);
+        Path path = storeFile(file, storedFileName);
+        FileUpload fileUpload = new FileUpload(originalFileName, fileType, path.toString(), collectionEntry);
+        FileUpload savedFileUpload;
+        try {
+            savedFileUpload = fileUploadRepository.save(fileUpload);
+        } catch (RuntimeException exception) {
+            deleteStoredFile(path);
+            throw new FileStorageException("Could not save file", exception);
+        }
+        return fileUploadMapper.mapToResponseDTO(savedFileUpload);
+    }
+
+    private void deleteStoredFile(Path path) {
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException exception) {
+            throw new FileStorageException("Could not delete file", exception);
+        }
+    }
 }

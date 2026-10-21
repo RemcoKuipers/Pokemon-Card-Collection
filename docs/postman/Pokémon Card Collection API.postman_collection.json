@@ -1984,6 +1984,43 @@
         }
       ],
       "name": "Collectie quantity verhogen"
+    },
+    {
+      "item": [
+        {
+          "name": "Afbeelding uploaden",
+          "request": {
+            "body": {
+              "formdata": [
+                {
+                  "key": "file",
+                  "src": [
+                    "/C:/Users/remsl/OneDrive/Desktop/starmie.png"
+                  ],
+                  "type": "file"
+                }
+              ],
+              "mode": "formdata"
+            },
+            "description": "Dit request uploadt een afbeelding en koppelt deze aan een collectie entry van de ingelogde gebruiker. Vereist de USER clientrol. Kies bij Body voor form-data, gebruik als key file en selecteer bij type File een JPG/JPEG- of PNG-bestand.\n\nIk verwacht een status 201 Created met als return het JSON-object met de bestandsgegevens en het gekoppelde collectie entry ID.\n\nAls het bestand leeg is verwacht ik een 400 Bad Request met de tekst: File is empty. Bij een ongeldig bestandstype verwacht ik een 400 Bad Request met de tekst: Invalid file type.\n\nAls de collectie entry niet bestaat of van een andere gebruiker is verwacht ik een 404 Not Found.",
+            "header": [],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "1",
+                "files"
+              ],
+              "raw": "{{baseUrl}}/collectionentries/1/files"
+            }
+          },
+          "response": []
+        }
+      ],
+      "name": "Uploads"
     }
   ],
   "variable": [

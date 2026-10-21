@@ -55,5 +55,19 @@ public class GlobalExceptionHandler {
                 Map.of("message", exception.getMessage()),
                 HttpStatus.SERVICE_UNAVAILABLE);
     }
+
+    @ExceptionHandler(InvalidFileException.class)
+    public ResponseEntity<Map<String, String>> handleInvalidFileException(InvalidFileException exception) {
+        return new ResponseEntity<>(
+                Map.of("message", exception.getMessage()),
+                HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(FileStorageException.class)
+    public ResponseEntity<Map<String, String>> handleFileStorageException(FileStorageException exception) {
+        return new ResponseEntity<>(
+                Map.of("message", exception.getMessage()),
+                HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
 

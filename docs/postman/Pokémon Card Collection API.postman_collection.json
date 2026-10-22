@@ -2018,6 +2018,26 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Afbeelding bij collectie entry ophalen in de map Uploads",
+          "request": {
+            "description": "Dit request haalt de bestandsgegevens van de afbeeldingen bij een eigen collectie entry op. Vereist de USER clientrol. Ik verwacht een status 200 OK met een lijst van JSON-objecten, waarbij de lijst leeg mag zijn.\n\nAls de collectie entry niet bestaat of van een andere gebruiker is verwacht ik een 404 Not Found.",
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "1",
+                "files"
+              ],
+              "raw": "{{baseUrl}}/collectionentries/1/files"
+            }
+          },
+          "response": []
         }
       ],
       "name": "Uploads"

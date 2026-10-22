@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
@@ -118,5 +119,14 @@ public class FileUploadService {
         } catch (IOException exception) {
             throw new FileStorageException("Could not delete file", exception);
         }
+    }
+
+    public List<FileUploadResponseDTO> getFilesByCollectionEntryId(Long collectionEntryId) {
+        CollectionEntry collectionEntry = getOwnedCollectionEntry(collectionEntryId);
+        List<FileUpload> uploads = fileUploadRepository.findByCollectionEntry(collectionEntry);
+        return uploads.stream()
+                .map(upload -> fileUploadMapper.mapToResponseDTO(upload))
+                .toList();
+
     }
 }

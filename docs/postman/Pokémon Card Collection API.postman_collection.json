@@ -2037,6 +2037,33 @@
         }
       ],
       "name": "Uploads"
+    },
+    {
+      "item": [
+        {
+          "name": "Afbeelding downloaden",
+          "request": {
+            "description": "Dit request download de afbeeldingen bij een eigen collectie entry. Vereist de USER clientrol. Ik verwacht een status 200 OK met het bestand en Content Disposition: attachment.\n\nAls de collectie entry niet bestaat of van een andere gebruiker is verwacht ik een 404 Not Found",
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "1",
+                "files",
+                "1",
+                "download"
+              ],
+              "raw": "{{baseUrl}}/collectionentries/1/files/1/download"
+            }
+          },
+          "response": []
+        }
+      ],
+      "name": "Downloads"
     }
   ],
   "variable": [

@@ -60,4 +60,17 @@ public class FileUploadController {
                 .body(file.resource());
     }
 
+    @GetMapping("/{fileId}/download")
+    public ResponseEntity<Resource> downloadFile(@PathVariable Long fileId, @PathVariable Long collectionEntryId) {
+        FileResourceDTO file =  fileUploadService.getFileResource(collectionEntryId, fileId);
+        return ResponseEntity.ok()
+                .contentType(getMediaType(file.fileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION,
+                        ContentDisposition.attachment()
+                                .filename(file.fileName(), StandardCharsets.UTF_8)
+                                .build()
+                                .toString())
+                .body(file.resource());
+    }
+
 }

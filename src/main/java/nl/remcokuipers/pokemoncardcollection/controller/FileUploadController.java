@@ -49,7 +49,7 @@ public class FileUploadController {
 
     @GetMapping("/{fileId}")
     public ResponseEntity<Resource> viewFile(@PathVariable Long fileId, @PathVariable Long collectionEntryId) {
-        FileResourceDTO file =  fileUploadService.getFileResource(collectionEntryId, fileId);
+        FileResourceDTO file = fileUploadService.getFileResource(collectionEntryId, fileId);
         return ResponseEntity.ok()
                 .contentType(getMediaType(file.fileType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION,
@@ -62,7 +62,7 @@ public class FileUploadController {
 
     @GetMapping("/{fileId}/download")
     public ResponseEntity<Resource> downloadFile(@PathVariable Long fileId, @PathVariable Long collectionEntryId) {
-        FileResourceDTO file =  fileUploadService.getFileResource(collectionEntryId, fileId);
+        FileResourceDTO file = fileUploadService.getFileResource(collectionEntryId, fileId);
         return ResponseEntity.ok()
                 .contentType(getMediaType(file.fileType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION,

@@ -21,15 +21,17 @@ public class CollectionEntryService {
     private final PokemonCardRepository pokemonCardRepository;
     private final CollectionEntryRepository collectionEntryRepository;
     private final CollectionEntryMapper collectionEntryMapper;
+    private final FileUploadService fileUploadService;
 
     public CollectionEntryService(
             PokemonCardRepository pokemonCardRepository,
             CollectionEntryMapper collectionEntryMapper,
-            CollectionEntryRepository collectionEntryRepository
+            CollectionEntryRepository collectionEntryRepository, FileUploadService fileUploadService
     ) {
         this.pokemonCardRepository = pokemonCardRepository;
         this.collectionEntryRepository = collectionEntryRepository;
         this.collectionEntryMapper = collectionEntryMapper;
+        this.fileUploadService = fileUploadService;
     }
 
     public CollectionEntryResponseDTO addCollectionEntry(CollectionEntryRequestDTO dto, User user) {
@@ -133,6 +135,7 @@ public class CollectionEntryService {
                                 new ResourceNotFoundException("Collection entry with ID " + id + " not found."
                                 )
                         );
+        fileUploadService.deleteFilesByCollectionEntry(collectionEntry);
         collectionEntryRepository.delete(collectionEntry);
 
     }

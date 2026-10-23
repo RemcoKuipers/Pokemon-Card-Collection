@@ -34,6 +34,8 @@ class CollectionEntryServiceTest {
     private CollectionEntryMapper collectionEntryMapper;
     @InjectMocks
     private CollectionEntryService collectionEntryService;
+    @Mock
+    private FileUploadService fileUploadService;
 
     @Test
     void addCollectionEntry_verhoogtAantalBijBestaandeCombinatie() {
@@ -393,6 +395,7 @@ class CollectionEntryServiceTest {
 
         // Assert
         verify(collectionEntryRepository).delete(collectionEntry);
+        verify(fileUploadService).deleteFilesByCollectionEntry(collectionEntry);
     }
 
     @Test

@@ -2038,7 +2038,7 @@
         {
           "name": "Afbeelding verwijderen",
           "request": {
-            "description": "Dit request verwijderd de afbeeldingen bij een eigen collectie entry . Vereist de USER clientrol. Ik verwacht een status 204 No Content zonder body.\n\nAls de collectie entry niet bestaat of van een andere gebruiker is verwacht ik een 404 Not Found.",
+            "description": "Dit request verwijderd de afbeeldingen bij een eigen collectie entry en gekoppelde uploads . Vereist de USER clientrol. Ik verwacht een status 204 No Content zonder body.\n\nAls de collectie entry niet bestaat of van een andere gebruiker is verwacht ik een 404 Not Found.",
             "header": [],
             "method": "DELETE",
             "url": {
@@ -2047,11 +2047,9 @@
               ],
               "path": [
                 "collectionentries",
-                "1",
-                "files",
                 "1"
               ],
-              "raw": "{{baseUrl}}/collectionentries/1/files/1"
+              "raw": "{{baseUrl}}/collectionentries/1"
             }
           },
           "response": []

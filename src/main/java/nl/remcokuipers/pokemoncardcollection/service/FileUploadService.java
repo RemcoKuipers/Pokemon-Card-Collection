@@ -137,9 +137,9 @@ public class FileUploadService {
 
     }
 
-    private FileUpload getOwnedFileUpload (Long collectionEntryId, Long fileId) {
+    private FileUpload getOwnedFileUpload(Long collectionEntryId, Long fileId) {
         CollectionEntry collectionEntry = getOwnedCollectionEntry(collectionEntryId);
-        FileUpload  upload = fileUploadRepository.findByIdAndCollectionEntry(fileId, collectionEntry)
+        FileUpload upload = fileUploadRepository.findByIdAndCollectionEntry(fileId, collectionEntry)
                 .orElseThrow(() ->
                         new ResourceNotFoundException(
                                 "File with id " + fileId + " not found")
@@ -149,7 +149,7 @@ public class FileUploadService {
 
     private Resource loadFileResource(Path path) {
 
-        try{
+        try {
             Resource resource = new UrlResource(path.toUri());
             if (!resource.exists() || !resource.isReadable()) {
                 throw new ResourceNotFoundException("File not found.");
@@ -172,5 +172,14 @@ public class FileUploadService {
         Path path = Path.of(upload.getFilePath());
         deleteStoredFile(path);
         fileUploadRepository.delete(upload);
+    }
+
+    public void deleteFilesByCollectionEntry(CollectionEntry collectionEntry) {
+        List<FileUpload> uploads = fileUploadRepository.findByCollectionEntry(collectionEntry);
+        for (FileUpload upload : uploads) {
+            Path path = Path.of(upload.getFilePath());
+            deleteStoredFile(path);
+            fileUploadRepository.delete(upload);
+        }
     }
 }

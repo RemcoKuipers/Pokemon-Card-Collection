@@ -291,6 +291,26 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Kaart informatie ophalen via externe ID",
+          "request": {
+            "description": "Haalt Kaart informatie via externe API op en geeft de Kaart gegevens terug. Gebruik een geldig USER Token. Verwacht: Status 200 OK met als response: de kaart gegevens .",
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pokemoncards",
+                "external",
+                "swsh3-136"
+              ],
+              "raw": "{{baseUrl}}/pokemoncards/external/swsh3-136"
+            }
+          },
+          "response": []
         }
       ],
       "name": "PokemonCards"
@@ -300,51 +320,6 @@
         {
           "name": "Collectie van huidige gebruiker ophalen",
           "request": {
-            "auth": {
-              "oauth2": [
-                {
-                  "key": "addTokenTo",
-                  "type": "string",
-                  "value": "header"
-                },
-                {
-                  "key": "redirect_uri",
-                  "type": "string",
-                  "value": "https://oauth.pstmn.io/v1/callback"
-                },
-                {
-                  "key": "tokenName",
-                  "type": "string",
-                  "value": "Test User"
-                },
-                {
-                  "key": "authUrl",
-                  "type": "string",
-                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth"
-                },
-                {
-                  "key": "accessTokenUrl",
-                  "type": "string",
-                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token"
-                },
-                {
-                  "key": "clientId",
-                  "type": "string",
-                  "value": "{{vault:auth_secret_07gb}}"
-                },
-                {
-                  "key": "clientSecret",
-                  "type": "string",
-                  "value": "{{vault:auth_secret_0oww}}"
-                },
-                {
-                  "key": "scope",
-                  "type": "string",
-                  "value": "openid"
-                }
-              ],
-              "type": "oauth2"
-            },
             "description": "Dit request haalt de collectie van de ingelogde gebruiker op, vereist USER clientrol.. Ik verwacht een status 200 OK met een lijst van collection entrys waarbij de lijst leeg mag zijn (\\[\\])",
             "header": [],
             "method": "GET",
@@ -2035,6 +2010,27 @@
                 "files"
               ],
               "raw": "{{baseUrl}}/collectionentries/1/files"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Afbeelding bekijken",
+          "request": {
+            "description": "Dit request haalt de afbeeldingen bij een eigen collectie entry op. Vereist de USER clientrol. Ik verwacht een status 200 OK met een afbeelding.\n\nAls de collectie entry niet bestaat of van een andere gebruiker is verwacht ik een 404 Not Found.",
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "1",
+                "files",
+                "2"
+              ],
+              "raw": "{{baseUrl}}/collectionentries/1/files/2"
             }
           },
           "response": []

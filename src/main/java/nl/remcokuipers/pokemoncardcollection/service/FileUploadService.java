@@ -166,4 +166,11 @@ public class FileUploadService {
         Resource resource = loadFileResource(path);
         return fileUploadMapper.mapToFileResourceDTO(upload, resource);
     }
+
+    public void deleteFile(Long collectionEntryId, Long fileId) {
+        FileUpload upload = getOwnedFileUpload(collectionEntryId, fileId);
+        Path path = Path.of(upload.getFilePath());
+        deleteStoredFile(path);
+        fileUploadRepository.delete(upload);
+    }
 }

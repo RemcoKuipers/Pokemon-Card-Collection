@@ -73,4 +73,10 @@ public class FileUploadController {
                 .body(file.resource());
     }
 
+    @DeleteMapping("/{fileId}")
+    public ResponseEntity<Void> deleteFile(@PathVariable Long collectionEntryId, @PathVariable Long fileId) {
+        fileUploadService.deleteFile(collectionEntryId, fileId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

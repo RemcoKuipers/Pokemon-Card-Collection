@@ -568,7 +568,7 @@
         {
           "name": "Collectie entry verwijderen",
           "request": {
-            "description": "Voer eerst Kaart toevoegen aan collectie uit zodat we een id krijgen. Gebruik het teruggegeven entry ID voor het maken van deze DELETE request. Ik verwacht een status 204 No Content met een lege body terug.",
+            "description": "Dit request verwijdert een eigen collectie entry en ruimt alle gekoppelde uploads op: de bestanden en de bestandsgegevens in de database. Vereist de USER clientrol. Ik verwacht een status 204 No Content zonder body.\n\nAls de collectie entry niet bestaat of van een andere gebruiker is verwacht ik een 404 Not Found.",
             "header": [],
             "method": "DELETE",
             "url": {
@@ -2038,7 +2038,7 @@
         {
           "name": "Afbeelding verwijderen",
           "request": {
-            "description": "Dit request verwijderd de afbeeldingen bij een eigen collectie entry en gekoppelde uploads . Vereist de USER clientrol. Ik verwacht een status 204 No Content zonder body.\n\nAls de collectie entry niet bestaat of van een andere gebruiker is verwacht ik een 404 Not Found.",
+            "description": "Dit request verwijdert één afbeelding en de bijbehorende bestandsgegevens bij een eigen collectie entry. Vereist de USER clientrol. Ik verwacht een status 204 No Content zonder body.\n\nAls het bestand of de collectie entry niet bestaat, of de collectie entry van een andere gebruiker is, verwacht ik een 404 Not Found.",
             "header": [],
             "method": "DELETE",
             "url": {
@@ -2047,9 +2047,11 @@
               ],
               "path": [
                 "collectionentries",
+                "1",
+                "files",
                 "1"
               ],
-              "raw": "{{baseUrl}}/collectionentries/1"
+              "raw": "{{baseUrl}}/collectionentries/1/files/1"
             }
           },
           "response": []

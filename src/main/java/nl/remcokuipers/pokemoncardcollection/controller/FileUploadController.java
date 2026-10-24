@@ -2,7 +2,6 @@ package nl.remcokuipers.pokemoncardcollection.controller;
 
 import nl.remcokuipers.pokemoncardcollection.dto.FileResourceDTO;
 import nl.remcokuipers.pokemoncardcollection.dto.FileUploadResponseDTO;
-import nl.remcokuipers.pokemoncardcollection.entity.User;
 import nl.remcokuipers.pokemoncardcollection.enums.FileType;
 import nl.remcokuipers.pokemoncardcollection.service.CurrentUserService;
 import nl.remcokuipers.pokemoncardcollection.service.FileUploadService;

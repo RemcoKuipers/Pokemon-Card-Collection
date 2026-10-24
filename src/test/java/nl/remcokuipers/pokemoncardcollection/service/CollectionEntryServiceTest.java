@@ -125,6 +125,7 @@ class CollectionEntryServiceTest {
         verify(collectionEntryRepository).save(targetEntry);
         verify(collectionEntryRepository).delete(collectionEntry);
         verify(collectionEntryRepository, never()).delete(targetEntry);
+        verify(fileUploadService).moveFilesToCollectionEntry(collectionEntry, targetEntry);
     }
 
     @Test

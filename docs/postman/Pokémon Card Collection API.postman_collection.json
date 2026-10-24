@@ -549,7 +549,7 @@
               },
               "raw": "{\r\n    \"quantity\": 5,\r\n    \"condition\": \"GOOD\" \r\n      \r\n}"
             },
-            "description": "Voer eerst Kaart toevoegen aan collectie uit zodat we een id krijgen. Gebruik het teruggegeven entry ID voor het maken van deze PUT request. In de Body heb ik het aantal en conditie meegestuurd en verwacht ik een 200 OK status met de aangepaste gegevens in de responsebody.",
+            "description": "Voer eerst Kaart toevoegen aan collectie uit zodat we een id krijgen. Gebruik het teruggegeven entry ID voor het maken van deze PUT request. In de Body heb ik het aantal en conditie meegestuurd en verwacht ik een 200 OK status met de aangepaste gegevens in de responsebody.\n\nBij het samenvoegen worden de gekoppelde afbeeldingen overgezet naar het collectie-item dat blijft bestaan.",
             "header": [],
             "method": "PUT",
             "url": {

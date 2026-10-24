@@ -118,6 +118,7 @@ public class CollectionEntryService {
             CollectionEntry targetEntry = existingEntry.get();
             targetEntry.setQuantity(targetEntry.getQuantity() + dto.quantity());
             targetEntry = collectionEntryRepository.save(targetEntry);
+            fileUploadService.moveFilesToCollectionEntry(collectionEntry, targetEntry);
             collectionEntryRepository.delete(collectionEntry);
             return collectionEntryMapper.mapToResponseDTO(targetEntry);
         }

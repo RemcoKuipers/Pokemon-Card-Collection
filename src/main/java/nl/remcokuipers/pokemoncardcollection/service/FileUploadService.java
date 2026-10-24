@@ -182,4 +182,12 @@ public class FileUploadService {
             fileUploadRepository.delete(upload);
         }
     }
+
+    public void moveFilesToCollectionEntry(CollectionEntry sourceEntry, CollectionEntry targetEntry) {
+        List<FileUpload> uploads = fileUploadRepository.findByCollectionEntry(sourceEntry);
+        for (FileUpload upload : uploads) {
+        upload.setCollectionEntry(targetEntry);
+        fileUploadRepository.save(upload);
+        }
+    }
 }

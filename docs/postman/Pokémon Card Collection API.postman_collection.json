@@ -291,6 +291,26 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Kaart informatie ophalen via externe ID",
+          "request": {
+            "description": "Haalt Kaart informatie via externe API op en geeft de Kaart gegevens terug. Gebruik een geldig USER Token. Verwacht: Status 200 OK met als response: de kaart gegevens .",
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "pokemoncards",
+                "external",
+                "swsh3-136"
+              ],
+              "raw": "{{baseUrl}}/pokemoncards/external/swsh3-136"
+            }
+          },
+          "response": []
         }
       ],
       "name": "PokemonCards"
@@ -300,51 +320,6 @@
         {
           "name": "Collectie van huidige gebruiker ophalen",
           "request": {
-            "auth": {
-              "oauth2": [
-                {
-                  "key": "addTokenTo",
-                  "type": "string",
-                  "value": "header"
-                },
-                {
-                  "key": "redirect_uri",
-                  "type": "string",
-                  "value": "https://oauth.pstmn.io/v1/callback"
-                },
-                {
-                  "key": "tokenName",
-                  "type": "string",
-                  "value": "Test User"
-                },
-                {
-                  "key": "authUrl",
-                  "type": "string",
-                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth"
-                },
-                {
-                  "key": "accessTokenUrl",
-                  "type": "string",
-                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token"
-                },
-                {
-                  "key": "clientId",
-                  "type": "string",
-                  "value": "{{vault:auth_secret_07gb}}"
-                },
-                {
-                  "key": "clientSecret",
-                  "type": "string",
-                  "value": "{{vault:auth_secret_0oww}}"
-                },
-                {
-                  "key": "scope",
-                  "type": "string",
-                  "value": "openid"
-                }
-              ],
-              "type": "oauth2"
-            },
             "description": "Dit request haalt de collectie van de ingelogde gebruiker op, vereist USER clientrol.. Ik verwacht een status 200 OK met een lijst van collection entrys waarbij de lijst leeg mag zijn (\\[\\])",
             "header": [],
             "method": "GET",
@@ -574,7 +549,7 @@
               },
               "raw": "{\r\n    \"quantity\": 5,\r\n    \"condition\": \"GOOD\" \r\n      \r\n}"
             },
-            "description": "Voer eerst Kaart toevoegen aan collectie uit zodat we een id krijgen. Gebruik het teruggegeven entry ID voor het maken van deze PUT request. In de Body heb ik het aantal en conditie meegestuurd en verwacht ik een 200 OK status met de aangepaste gegevens in de responsebody.",
+            "description": "Voer eerst Kaart toevoegen aan collectie uit zodat we een id krijgen. Gebruik het teruggegeven entry ID voor het maken van deze PUT request. In de Body heb ik het aantal en conditie meegestuurd en verwacht ik een 200 OK status met de aangepaste gegevens in de responsebody.\n\nBij het samenvoegen worden de gekoppelde afbeeldingen overgezet naar het collectie-item dat blijft bestaan.",
             "header": [],
             "method": "PUT",
             "url": {
@@ -593,7 +568,7 @@
         {
           "name": "Collectie entry verwijderen",
           "request": {
-            "description": "Voer eerst Kaart toevoegen aan collectie uit zodat we een id krijgen. Gebruik het teruggegeven entry ID voor het maken van deze DELETE request. Ik verwacht een status 204 No Content met een lege body terug.",
+            "description": "Dit request verwijdert een eigen collectie entry en ruimt alle gekoppelde uploads op: de bestanden en de bestandsgegevens in de database. Vereist de USER clientrol. Ik verwacht een status 204 No Content zonder body.\n\nAls de collectie entry niet bestaat of van een andere gebruiker is verwacht ik een 404 Not Found.",
             "header": [],
             "method": "DELETE",
             "url": {
@@ -1984,6 +1959,132 @@
         }
       ],
       "name": "Collectie quantity verhogen"
+    },
+    {
+      "item": [
+        {
+          "name": "Afbeelding uploaden",
+          "request": {
+            "body": {
+              "formdata": [
+                {
+                  "key": "file",
+                  "src": [
+                    "/C:/Users/remsl/OneDrive/Desktop/starmie.png"
+                  ],
+                  "type": "file"
+                }
+              ],
+              "mode": "formdata"
+            },
+            "description": "Dit request uploadt een afbeelding en koppelt deze aan een collectie entry van de ingelogde gebruiker. Vereist de USER clientrol. Kies bij Body voor form-data, gebruik als key file en selecteer bij type File een JPG/JPEG- of PNG-bestand.\n\nIk verwacht een status 201 Created met als return het JSON-object met de bestandsgegevens en het gekoppelde collectie entry ID.\n\nAls het bestand leeg is verwacht ik een 400 Bad Request met de tekst: File is empty. Bij een ongeldig bestandstype verwacht ik een 400 Bad Request met de tekst: Invalid file type.\n\nAls de collectie entry niet bestaat of van een andere gebruiker is verwacht ik een 404 Not Found.",
+            "header": [],
+            "method": "POST",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "1",
+                "files"
+              ],
+              "raw": "{{baseUrl}}/collectionentries/1/files"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Afbeelding bij collectie entry ophalen in de map Uploads",
+          "request": {
+            "description": "Dit request haalt de bestandsgegevens van de afbeeldingen bij een eigen collectie entry op. Vereist de USER clientrol. Ik verwacht een status 200 OK met een lijst van JSON-objecten, waarbij de lijst leeg mag zijn.\n\nAls de collectie entry niet bestaat of van een andere gebruiker is verwacht ik een 404 Not Found.",
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "1",
+                "files"
+              ],
+              "raw": "{{baseUrl}}/collectionentries/1/files"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Afbeelding bekijken",
+          "request": {
+            "description": "Dit request haalt de afbeeldingen bij een eigen collectie entry op. Vereist de USER clientrol. Ik verwacht een status 200 OK met een afbeelding.\n\nAls de collectie entry niet bestaat of van een andere gebruiker is verwacht ik een 404 Not Found.",
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "1",
+                "files",
+                "2"
+              ],
+              "raw": "{{baseUrl}}/collectionentries/1/files/2"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Afbeelding verwijderen",
+          "request": {
+            "description": "Dit request verwijdert één afbeelding en de bijbehorende bestandsgegevens bij een eigen collectie entry. Vereist de USER clientrol. Ik verwacht een status 204 No Content zonder body.\n\nAls het bestand of de collectie entry niet bestaat, of de collectie entry van een andere gebruiker is, verwacht ik een 404 Not Found.",
+            "header": [],
+            "method": "DELETE",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "1",
+                "files",
+                "1"
+              ],
+              "raw": "{{baseUrl}}/collectionentries/1/files/1"
+            }
+          },
+          "response": []
+        }
+      ],
+      "name": "Uploads"
+    },
+    {
+      "item": [
+        {
+          "name": "Afbeelding downloaden",
+          "request": {
+            "description": "Dit request download de afbeeldingen bij een eigen collectie entry. Vereist de USER clientrol. Ik verwacht een status 200 OK met het bestand en Content Disposition: attachment.\n\nAls de collectie entry niet bestaat of van een andere gebruiker is verwacht ik een 404 Not Found",
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "collectionentries",
+                "1",
+                "files",
+                "1",
+                "download"
+              ],
+              "raw": "{{baseUrl}}/collectionentries/1/files/1/download"
+            }
+          },
+          "response": []
+        }
+      ],
+      "name": "Downloads"
     }
   ],
   "variable": [

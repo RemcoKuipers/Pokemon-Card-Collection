@@ -208,6 +208,9 @@ Haal een token op, log in met het gewenste testaccount en kies **Use Token**. Co
 
 De collectie bevat vaste voorbeeld-IDs. Pas deze aan aan de aanwezige testdata. Voor eigenaarschapschecks maak je gegevens aan als `test` en probeer je die met `test2` te benaderen. Controleer daarna als eigenaar of de gegevens intact zijn.
 
+Voor het testen van uploads staan de bestanden `starmie.png` en `charmander.jpg` in `docs/postman/testbestanden/`. Maak eerst een eigen collectie entry aan en gebruik het teruggegeven ID in de uploadrequest.
+Kies in Postman bij **Body → form-data** de key `file` met type **File** en selecteer één van deze bestanden. Gebruik hiervoor een USER-token.
+
 ## Tests uitvoeren
 
 Voer vanuit de projectmap uit:

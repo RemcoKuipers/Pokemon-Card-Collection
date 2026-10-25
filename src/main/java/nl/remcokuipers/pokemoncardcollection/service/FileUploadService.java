@@ -13,7 +13,6 @@ import nl.remcokuipers.pokemoncardcollection.mapper.FileUploadMapper;
 import nl.remcokuipers.pokemoncardcollection.repository.CollectionEntryRepository;
 import nl.remcokuipers.pokemoncardcollection.repository.FileUploadRepository;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
@@ -21,15 +20,14 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.awt.*;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.UUID;
 
 
@@ -87,11 +85,11 @@ public class FileUploadService {
         try (InputStream inputStream = file.getInputStream()) {
             Files.copy(inputStream, path);
             return path;
+        } catch (FileAlreadyExistsException exception) {
+            throw new FileStorageException("Could not store uploaded file.", exception);
         } catch (IOException exception) {
-            throw new FileStorageException(
-                    "Could not store uploaded file.",
-                    exception
-            );
+            deleteStoredFile(path);
+            throw new FileStorageException("Could not store uploaded file.", exception);
         }
     }
 
@@ -186,8 +184,9 @@ public class FileUploadService {
     public void moveFilesToCollectionEntry(CollectionEntry sourceEntry, CollectionEntry targetEntry) {
         List<FileUpload> uploads = fileUploadRepository.findByCollectionEntry(sourceEntry);
         for (FileUpload upload : uploads) {
-        upload.setCollectionEntry(targetEntry);
-        fileUploadRepository.save(upload);
+            upload.setCollectionEntry(targetEntry);
+            fileUploadRepository.save(upload);
         }
     }
+
 }

@@ -52,7 +52,7 @@ public class SecurityConfig {
                         .requestMatchers("/collectionentries", "/collectionentries/**").hasRole("USER")
                         .requestMatchers("/favorites", "/favorites/**").hasRole("USER")
                         .requestMatchers("/userprofiles", "/userprofiles/**").hasRole("USER")
-                        .requestMatchers("/admin/users").hasRole("ADMIN")
+                        .requestMatchers("/admin/users", "/admin/users/*").hasRole("ADMIN")
                         .anyRequest().denyAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

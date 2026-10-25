@@ -1369,6 +1369,66 @@
           "response": []
         },
         {
+          "name": "Gebruiker ophalen op ID",
+          "request": {
+            "auth": {
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "type": "string",
+                  "value": "{{vault:auth_secret_07gb}}"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "type": "string",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token"
+                },
+                {
+                  "key": "authUrl",
+                  "type": "string",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth"
+                },
+                {
+                  "key": "addTokenTo",
+                  "type": "string",
+                  "value": "header"
+                },
+                {
+                  "key": "clientSecret",
+                  "type": "string",
+                  "value": "{{vault:auth_secret_0oww}}"
+                },
+                {
+                  "key": "scope",
+                  "type": "string",
+                  "value": "openid"
+                },
+                {
+                  "key": "redirect_uri",
+                  "type": "string",
+                  "value": "https://oauth.pstmn.io/v1/callback"
+                }
+              ],
+              "type": "oauth2"
+            },
+            "description": "Haalt één lokale gebruiker op aan de hand van het gebruikers ID. Vereist de ADMIN clientrol. Zonder token: 401. Met alleen USER: 403. Met ADMIN en een bestaand gebruikers ID: 200 met id, username en email. Bij een niet-bestaand gebruikers ID: 404.",
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "1"
+              ],
+              "raw": "{{baseUrl}}/admin/users/1"
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Kaarten ophalen zonder token",
           "request": {
             "auth": {

@@ -41,4 +41,11 @@ public class AdminUserController {
         currentUserService.getCurrentUser();
         return ResponseEntity.ok(userService.updateUserEnabled(id, dto));
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable long id) {
+        currentUserService.getCurrentUser();
+        userService.deleteUser(id);
+        return ResponseEntity.noContent().build();
+    }
 }

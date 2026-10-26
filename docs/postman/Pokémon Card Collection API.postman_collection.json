@@ -1933,6 +1933,26 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Gebruiker verwijderen (ADMIN)",
+          "request": {
+            "description": "Verwijdert 1 lokale gebruiker aan de hand van het gebruikers ID. Vereist een actief account met de ADMIN clientrol. Verwijdert ook de gekoppelde favorieten, het profiel, collectie items, uploadrecords en fysieke uploadbestanden. Gedeelde Pokémonkaarten en gegevens van andere gebruikers blijven behouden.\n\nMet ADMIN en een bestaand gebruikers ID: 204 zonder responsebody. Zonder token: 401. Met alleen USER: 403. Bij een niet bestaand gebruikers ID, ook na een eerdere verwijdering: 404.\n\nHet Keycloak account blijft bestaan. Bij later API gebruik kan daarvoor opnieuw een lokale gebruiker worden aangemaakt.",
+            "header": [],
+            "method": "DELETE",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "1"
+              ],
+              "raw": "{{baseUrl}}/admin/users/1"
+            }
+          },
+          "response": []
         }
       ],
       "name": "Securitytests"

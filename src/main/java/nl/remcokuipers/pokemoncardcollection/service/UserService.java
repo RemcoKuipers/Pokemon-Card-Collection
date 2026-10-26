@@ -1,5 +1,6 @@
 package nl.remcokuipers.pokemoncardcollection.service;
 
+import nl.remcokuipers.pokemoncardcollection.dto.UserEnabledUpdateDTO;
 import nl.remcokuipers.pokemoncardcollection.dto.UserResponseDTO;
 import nl.remcokuipers.pokemoncardcollection.entity.User;
 import nl.remcokuipers.pokemoncardcollection.exception.ResourceNotFoundException;
@@ -34,6 +35,17 @@ public class UserService {
         if (user.isPresent()) {
             return userMapper.mapToResponseDTO(user.get());
         } else throw new ResourceNotFoundException("User with id: " + id + " not found");
+    }
+
+    public UserResponseDTO updateUserEnabled(long id, UserEnabledUpdateDTO dto){
+        Optional<User> user = userRepository.findById(id);
+        if (user.isPresent()) {
+            User foundUser = user.get();
+            foundUser.setEnabled(dto.enabled());
+            User savedUser = userRepository.save(foundUser);
+            return userMapper.mapToResponseDTO(savedUser);
+        } else throw new ResourceNotFoundException("User with id: " + id + " not found");
+
     }
 
 }

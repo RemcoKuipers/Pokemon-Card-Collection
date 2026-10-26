@@ -15,6 +15,8 @@ public class User {
     private String email;
     @Column(unique = true, nullable = false)
     private String keycloakId;
+    @Column(nullable = false)
+    boolean enabled = true;
 
     public User() {
     }
@@ -52,4 +54,11 @@ public class User {
         this.keycloakId = keycloakId;
     }
 
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        this.enabled = enabled;
+    }
 }

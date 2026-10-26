@@ -1903,6 +1903,36 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Acountstatus wijzigen (ADMIN)",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\r\n    \"enabled\": false\r\n}"
+            },
+            "description": "Wijzigt de enabled status van 1 lokale gebruiker aan de hand van het gebruikers ID. Vereist de ADMIN clientrol. Stuur enabled mee als true of false. Met ADMIN en geldige invoer: 200 met de bijgewerkte gebruikersgegevens. Bij ontbrekende of null waarde voor enabled: 400. Zonder token: 401. Met alleen USER: 403. Bij een niet-bestaand gebruikers-ID: 404.",
+            "header": [],
+            "method": "PUT",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "1",
+                "enabled"
+              ],
+              "raw": "{{baseUrl}}/admin/users/1/enabled"
+            }
+          },
+          "response": []
         }
       ],
       "name": "Securitytests"

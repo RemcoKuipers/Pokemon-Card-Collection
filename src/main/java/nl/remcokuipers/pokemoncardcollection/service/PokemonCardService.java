@@ -79,4 +79,21 @@ public class PokemonCardService {
 
         return new PokemonCardPriceResponseDTO(externalApiId, price, normalDifference, holoDifference);
     }
+
+    public PokemonCardResponseDTO updatePokemonCard(Long id, PokemonCardUpdateDTO dto){
+        Optional<PokemonCard> pokemonCard = pokemonCardRepository.findById(id);
+        if (pokemonCard.isPresent()) {
+            PokemonCard foundCard = pokemonCard.get();
+            foundCard.setName(dto.name());
+            foundCard.setSupertype(dto.supertype());
+            foundCard.setNumber(dto.number());
+            foundCard.setRarity(dto.rarity());
+            foundCard.setSetName(dto.setName());
+            foundCard.setTypes(dto.types());
+            foundCard.setSubtypes(dto.subtypes());
+            foundCard = pokemonCardRepository.save(foundCard);
+            return pokemonCardMapper.mapToResponseDTO(foundCard);
+        } throw new ResourceNotFoundException("PokemonCard with id " + id + " not found!");
+
+    }
 }

@@ -1973,6 +1973,34 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Kaartgegevens corrigeren (ADMIN)",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\r\n  \"name\": \"Pikachu veranderd\",\r\n  \"supertype\": \"Pokémon\",\r\n  \"number\": \"1\",\r\n  \"rarity\": \"Common\",\r\n  \"setName\": \"Testset\",\r\n  \"types\": [\"Lightning\"],\r\n  \"subtypes\": [\"Basic\"]\r\n}"
+            },
+            "description": "Corrigeert lokaal opgeslagen stabiele gegevens van een bestaande Pokémonkaart. Vereist een actief account met de ADMIN clientrol. Actuele prijsinformatie en prijstrends blijven afkomstig van de externe API.\n\nDe velden name, supertype, number, rarity en setName moeten gevuld zijn. De lijsten types en subtypes zijn verplicht; een lege lijst \\[\\] is toegestaan.\n\nMet ADMIN en een bestaand kaart ID: 200 met de bijgewerkte kaartgegevens. Bij ongeldige of ontbrekende velden: 400. Zonder token: 401. Met alleen USER: 403. Bij een niet bestaand kaart ID: 404.",
+            "header": [],
+            "method": "PUT",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cards",
+                "1"
+              ],
+              "raw": "{{baseUrl}}/cards/1"
+            }
+          },
+          "response": []
         }
       ],
       "name": "Securitytests"

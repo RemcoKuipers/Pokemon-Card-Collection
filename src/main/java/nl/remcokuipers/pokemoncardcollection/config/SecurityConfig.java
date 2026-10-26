@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers("/favorites", "/favorites/**").hasRole("USER")
                         .requestMatchers("/userprofiles", "/userprofiles/**").hasRole("USER")
                         .requestMatchers("/admin/users", "/admin/users/*", "/admin/users/*/enabled").hasRole("ADMIN")
+                        .requestMatchers("/admin/files/*").hasRole("ADMIN")
                         .anyRequest().denyAll()
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

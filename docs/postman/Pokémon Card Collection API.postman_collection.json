@@ -1953,6 +1953,26 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Upload verwijderen (ADMIN)",
+          "request": {
+            "description": "Verwijdert 1 gebruikersupload aan de hand van het bestands ID. Vereist een actief account met de ADMIN clientrol. De administrator mag ook uploads van andere gebruikers verwijderen. Zowel het fysieke bestand als het uploadrecord wordt verwijderd. Het gekoppelde collectie item blijft behouden.\n\nMet ADMIN en een bestaand bestands ID: 204 zonder responsebody. Zonder token: 401. Met alleen USER: 403. Bij een niet-bestaand bestands ID, ook na een eerdere verwijdering: 404.",
+            "header": [],
+            "method": "DELETE",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "files",
+                "1"
+              ],
+              "raw": "{{baseUrl}}/admin/files/1"
+            }
+          },
+          "response": []
         }
       ],
       "name": "Securitytests"
@@ -2080,7 +2100,7 @@
                 {
                   "key": "file",
                   "src": [
-                    "/C:/Users/remsl/OneDrive/Desktop/starmie.png"
+                    "/C:/Users/remsl/IdeaProjects/Pokemon Card Collection/docs/postman/testbestanden/starmie.png"
                   ],
                   "type": "file"
                 }

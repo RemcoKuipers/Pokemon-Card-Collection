@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -187,6 +188,16 @@ public class FileUploadService {
             upload.setCollectionEntry(targetEntry);
             fileUploadRepository.save(upload);
         }
+    }
+
+    public void deleteFileAsAdmin(Long fileId){
+        Optional<FileUpload> upload = fileUploadRepository.findById(fileId);
+        if (upload.isEmpty()) {
+            throw new ResourceNotFoundException("File with id " + fileId + " not found");
+        }
+        FileUpload foundUpload = upload.get();
+        deleteStoredFile(Path.of(foundUpload.getFilePath()));
+        fileUploadRepository.delete(foundUpload);
     }
 
 }

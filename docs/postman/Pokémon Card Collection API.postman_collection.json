@@ -1369,6 +1369,66 @@
           "response": []
         },
         {
+          "name": "Gebruiker ophalen op ID",
+          "request": {
+            "auth": {
+              "oauth2": [
+                {
+                  "key": "clientId",
+                  "type": "string",
+                  "value": "{{vault:auth_secret_07gb}}"
+                },
+                {
+                  "key": "accessTokenUrl",
+                  "type": "string",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/token"
+                },
+                {
+                  "key": "authUrl",
+                  "type": "string",
+                  "value": "http://localhost:9090/realms/PokemonCardCollection/protocol/openid-connect/auth"
+                },
+                {
+                  "key": "addTokenTo",
+                  "type": "string",
+                  "value": "header"
+                },
+                {
+                  "key": "clientSecret",
+                  "type": "string",
+                  "value": "{{vault:auth_secret_0oww}}"
+                },
+                {
+                  "key": "scope",
+                  "type": "string",
+                  "value": "openid"
+                },
+                {
+                  "key": "redirect_uri",
+                  "type": "string",
+                  "value": "https://oauth.pstmn.io/v1/callback"
+                }
+              ],
+              "type": "oauth2"
+            },
+            "description": "Haalt één lokale gebruiker op aan de hand van het gebruikers ID. Vereist de ADMIN clientrol. Zonder token: 401. Met alleen USER: 403. Met ADMIN en een bestaand gebruikers ID: 200 met id, username en email. Bij een niet-bestaand gebruikers ID: 404.",
+            "header": [],
+            "method": "GET",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "1"
+              ],
+              "raw": "{{baseUrl}}/admin/users/1"
+            }
+          },
+          "response": []
+        },
+        {
           "name": "Kaarten ophalen zonder token",
           "request": {
             "auth": {
@@ -1843,6 +1903,104 @@
             }
           },
           "response": []
+        },
+        {
+          "name": "Acountstatus wijzigen (ADMIN)",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\r\n    \"enabled\": false\r\n}"
+            },
+            "description": "Wijzigt de enabled status van 1 lokale gebruiker aan de hand van het gebruikers ID. Vereist een actief account met de ADMIN clientrol. Stuur enabled mee als false om API toegang te blokkeren of true om de toegang te herstellen. Met ADMIN en geldige invoer: 200 met de bijgewerkte gebruikersgegevens. Bij ontbrekende of null waarde voor enabled: 400. Zonder token: 401. Met alleen USER: 403. Bij een niet bestaand gebruikers ID: 404.\n\nEen geblokkeerde gebruiker krijgt bij beschermde API routes 403 met de melding \"User account is blocked\". Na deblokkeren kan de gebruiker met een geldig token weer toegang krijgen.",
+            "header": [],
+            "method": "PUT",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "1",
+                "enabled"
+              ],
+              "raw": "{{baseUrl}}/admin/users/1/enabled"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Gebruiker verwijderen (ADMIN)",
+          "request": {
+            "description": "Verwijdert 1 lokale gebruiker aan de hand van het gebruikers ID. Vereist een actief account met de ADMIN clientrol. Verwijdert ook de gekoppelde favorieten, het profiel, collectie items, uploadrecords en fysieke uploadbestanden. Gedeelde Pokémonkaarten en gegevens van andere gebruikers blijven behouden.\n\nMet ADMIN en een bestaand gebruikers ID: 204 zonder responsebody. Zonder token: 401. Met alleen USER: 403. Bij een niet bestaand gebruikers ID, ook na een eerdere verwijdering: 404.\n\nHet Keycloak account blijft bestaan. Bij later API gebruik kan daarvoor opnieuw een lokale gebruiker worden aangemaakt.",
+            "header": [],
+            "method": "DELETE",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "users",
+                "1"
+              ],
+              "raw": "{{baseUrl}}/admin/users/1"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Upload verwijderen (ADMIN)",
+          "request": {
+            "description": "Verwijdert 1 gebruikersupload aan de hand van het bestands ID. Vereist een actief account met de ADMIN clientrol. De administrator mag ook uploads van andere gebruikers verwijderen. Zowel het fysieke bestand als het uploadrecord wordt verwijderd. Het gekoppelde collectie item blijft behouden.\n\nMet ADMIN en een bestaand bestands ID: 204 zonder responsebody. Zonder token: 401. Met alleen USER: 403. Bij een niet-bestaand bestands ID, ook na een eerdere verwijdering: 404.",
+            "header": [],
+            "method": "DELETE",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "admin",
+                "files",
+                "1"
+              ],
+              "raw": "{{baseUrl}}/admin/files/1"
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Kaartgegevens corrigeren (ADMIN)",
+          "request": {
+            "body": {
+              "mode": "raw",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              },
+              "raw": "{\r\n  \"name\": \"Pikachu veranderd\",\r\n  \"supertype\": \"Pokémon\",\r\n  \"number\": \"1\",\r\n  \"rarity\": \"Common\",\r\n  \"setName\": \"Testset\",\r\n  \"types\": [\"Lightning\"],\r\n  \"subtypes\": [\"Basic\"]\r\n}"
+            },
+            "description": "Corrigeert lokaal opgeslagen stabiele gegevens van een bestaande Pokémonkaart. Vereist een actief account met de ADMIN clientrol. Actuele prijsinformatie en prijstrends blijven afkomstig van de externe API.\n\nDe velden name, supertype, number, rarity en setName moeten gevuld zijn. De lijsten types en subtypes zijn verplicht; een lege lijst \\[\\] is toegestaan.\n\nMet ADMIN en een bestaand kaart ID: 200 met de bijgewerkte kaartgegevens. Bij ongeldige of ontbrekende velden: 400. Zonder token: 401. Met alleen USER: 403. Bij een niet bestaand kaart ID: 404.",
+            "header": [],
+            "method": "PUT",
+            "url": {
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cards",
+                "1"
+              ],
+              "raw": "{{baseUrl}}/cards/1"
+            }
+          },
+          "response": []
         }
       ],
       "name": "Securitytests"
@@ -1970,7 +2128,7 @@
                 {
                   "key": "file",
                   "src": [
-                    "/C:/Users/remsl/OneDrive/Desktop/starmie.png"
+                    "/C:/Users/remsl/IdeaProjects/Pokemon Card Collection/docs/postman/testbestanden/starmie.png"
                   ],
                   "type": "file"
                 }

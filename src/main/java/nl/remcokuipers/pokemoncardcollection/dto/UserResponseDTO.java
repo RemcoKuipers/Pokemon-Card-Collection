@@ -3,6 +3,7 @@ package nl.remcokuipers.pokemoncardcollection.dto;
 public record UserResponseDTO(
         Long id,
         String username,
-        String email
+        String email,
+        Boolean enabled
 ) {
 }

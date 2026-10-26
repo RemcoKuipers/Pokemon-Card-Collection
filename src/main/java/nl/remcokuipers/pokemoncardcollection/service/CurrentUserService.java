@@ -4,6 +4,7 @@ package nl.remcokuipers.pokemoncardcollection.service;
 import nl.remcokuipers.pokemoncardcollection.entity.User;
 import nl.remcokuipers.pokemoncardcollection.exception.DuplicateResourceException;
 import nl.remcokuipers.pokemoncardcollection.exception.IncompleteUserAccountException;
+import nl.remcokuipers.pokemoncardcollection.exception.UserBlockedException;
 import nl.remcokuipers.pokemoncardcollection.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.core.Authentication;
@@ -31,6 +32,9 @@ public class CurrentUserService {
         String keycloakId = jwt.getSubject();
         User user = userRepository.findByKeycloakId(keycloakId)
                 .orElseGet(() -> createLocalUser(jwt));
+        if (!user.isEnabled()){
+            throw new UserBlockedException("User account is blocked");
+        }
         return user;
     }
 

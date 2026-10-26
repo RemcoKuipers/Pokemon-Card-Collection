@@ -1916,7 +1916,7 @@
               },
               "raw": "{\r\n    \"enabled\": false\r\n}"
             },
-            "description": "Wijzigt de enabled status van 1 lokale gebruiker aan de hand van het gebruikers ID. Vereist de ADMIN clientrol. Stuur enabled mee als true of false. Met ADMIN en geldige invoer: 200 met de bijgewerkte gebruikersgegevens. Bij ontbrekende of null waarde voor enabled: 400. Zonder token: 401. Met alleen USER: 403. Bij een niet-bestaand gebruikers-ID: 404.",
+            "description": "Wijzigt de enabled status van 1 lokale gebruiker aan de hand van het gebruikers ID. Vereist een actief account met de ADMIN clientrol. Stuur enabled mee als false om API toegang te blokkeren of true om de toegang te herstellen. Met ADMIN en geldige invoer: 200 met de bijgewerkte gebruikersgegevens. Bij ontbrekende of null waarde voor enabled: 400. Zonder token: 401. Met alleen USER: 403. Bij een niet bestaand gebruikers ID: 404.\n\nEen geblokkeerde gebruiker krijgt bij beschermde API routes 403 met de melding \"User account is blocked\". Na deblokkeren kan de gebruiker met een geldig token weer toegang krijgen.",
             "header": [],
             "method": "PUT",
             "url": {

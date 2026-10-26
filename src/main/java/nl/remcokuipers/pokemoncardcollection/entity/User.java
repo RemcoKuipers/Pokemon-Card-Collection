@@ -16,7 +16,7 @@ public class User {
     @Column(unique = true, nullable = false)
     private String keycloakId;
     @Column(nullable = false)
-    boolean enabled = true;
+    private boolean enabled = true;
 
     public User() {
     }

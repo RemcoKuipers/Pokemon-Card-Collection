@@ -69,5 +69,12 @@ public class GlobalExceptionHandler {
                 Map.of("message", exception.getMessage()),
                 HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(UserBlockedException.class)
+    public ResponseEntity<Map<String, String>> handleUserBlockedException(UserBlockedException exception) {
+        return new ResponseEntity<>(
+                Map.of("message", exception.getMessage()),
+                HttpStatus.FORBIDDEN);
+    }
 }
 

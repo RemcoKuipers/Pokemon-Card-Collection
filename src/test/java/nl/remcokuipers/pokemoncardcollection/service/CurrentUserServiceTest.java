@@ -3,6 +3,7 @@ package nl.remcokuipers.pokemoncardcollection.service;
 import nl.remcokuipers.pokemoncardcollection.entity.User;
 import nl.remcokuipers.pokemoncardcollection.exception.DuplicateResourceException;
 import nl.remcokuipers.pokemoncardcollection.exception.IncompleteUserAccountException;
+import nl.remcokuipers.pokemoncardcollection.exception.UserBlockedException;
 import nl.remcokuipers.pokemoncardcollection.repository.UserRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -255,6 +256,33 @@ class CurrentUserServiceTest {
         // Act & Assert
         assertThrows(
                 DuplicateResourceException.class,
+                () -> currentUserService.getCurrentUser()
+        );
+        verify(userRepository, never()).save(any(User.class));
+    }
+
+    @Test
+    void getCurrentUser_metGeblokkeerdeGebruiker_gooitUserBlockedException() {
+        // Arrange
+        Jwt jwt = Jwt.withTokenValue("test-token")
+                .header("alg", "RS256")
+                .subject("keycloak-test-id")
+                .claim("preferred_username", "testgebruiker")
+                .claim("email", "testgebruiker@example.com")
+                .build();
+        SecurityContextHolder.getContext()
+                .setAuthentication(new JwtAuthenticationToken(jwt));
+        User bestaandeUser = new User(
+                "testgebruiker",
+                "testgebruiker@example.com"
+        );
+        bestaandeUser.setEnabled(false);
+        when(userRepository.findByKeycloakId("keycloak-test-id"))
+                .thenReturn(Optional.of(bestaandeUser));
+
+        // Act & Assert
+        assertThrows(
+                UserBlockedException.class,
                 () -> currentUserService.getCurrentUser()
         );
         verify(userRepository, never()).save(any(User.class));

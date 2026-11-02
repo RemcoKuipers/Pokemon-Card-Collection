@@ -18,10 +18,15 @@ De Pokémon Card Collection API helpt gebruikers hun Pokémonkaartencollectie te
 De huidige applicatie ondersteunt:
 
 * Pokémonkaarten bekijken;
-* kaarten toevoegen aan, wijzigen in en verwijderen uit een persoonlijke collectie;
-* persoonlijke favorieten beheren;
-* een gebruikersprofiel beheren;
-* als beheerder een overzicht van lokale gebruikers ophalen.
+* Kaarten toevoegen aan, wijzigen in en verwijderen uit een persoonlijke collectie;
+* Zoeken op kaartnaam;
+* Prijsinformatie opvragen;
+* Collectieafbeeldingen uploaden en downloaden;
+* Persoonlijke favorieten beheren;
+* Een gebruikersprofiel beheren;
+* Administrator kan lokale gebruikers bekijken, blokkeren, deblokkeren en verwijderen;
+* Administrator kan collectieuploads verwijderen;
+* Administrator kan lokaal opgeslagen kaartgegevens corrigeren;
 
 De API gebruikt Keycloak voor authenticatie en autorisatie. Gebruikers kunnen uitsluitend hun eigen collectie, favorieten en profiel beheren.
 
@@ -30,8 +35,8 @@ De API gebruikt Keycloak voor authenticatie en autorisatie. Gebruikers kunnen ui
 * Java JDK 25;
 * Maven, of de Maven Wrapper wanneer deze in de projectmap aanwezig is;
 * PostgreSQL;
-* Keycloak;
-* Postman voor het handmatig uitvoeren van API-requests;
+* Keycloak 26.7.4;
+* Postman voor het handmatig uitvoeren van API requests;
 * Git om de repository te klonen.
 
 De onderstaande terminalcommando’s zijn geschreven voor Windows PowerShell.
@@ -39,24 +44,24 @@ De onderstaande terminalcommando’s zijn geschreven voor Windows PowerShell.
 ## Projectstructuur en technieken
 
 | Locatie                                               | Inhoud                                 |
-| ----------------------------------------------------- | -------------------------------------- |
-| `src/main/java/nl/remcokuipers/pokemoncardcollection` | Java-broncode                          |
+| ----------------------------------------------------- |----------------------------------------|
+| `src/main/java/nl/remcokuipers/pokemoncardcollection` | Java broncode                          |
 | `config`                                              | Securityconfiguratie                   |
-| `controller`                                          | REST-endpoints                         |
+| `controller`                                          | REST endpoints                         |
 | `service`                                             | Applicatielogica                       |
 | `repository`                                          | Databasecommunicatie                   |
 | `entity`                                              | Databasemodellen                       |
-| `dto`                                                 | Invoer- en uitvoerobjecten             |
+| `dto`                                                 | Invoer en uitvoerobjecten              |
 | `mapper`                                              | Omzetting tussen entiteiten en DTO’s   |
 | `exception`                                           | Exceptions en centrale foutafhandeling |
 | `src/main/resources`                                  | Configuratie en initiële testdata      |
 | `src/test/java`                                       | Geautomatiseerde tests                 |
-| `docs/keycloak`                                       | Keycloak-realmexport                   |
-| `pom.xml`                                             | Maven-configuratie en dependencies     |
+| `docs/keycloak`                                       | Keycloak realmexport                   |
+| `pom.xml`                                             | Maven configuratie en dependencies     |
 
-De packages van `config` tot en met `exception` staan onder het genoemde Java-basispakket.
+De packages van `config` tot en met `exception` staan onder het genoemde Java basispakket.
 
-De API gebruikt Spring Boot 4.1.1 en Spring MVC voor de REST-endpoints, Spring Data JPA voor PostgreSQL en Spring Security voor het verwerken van OAuth2/JWT-tokens. Invoer wordt gevalideerd met Jakarta Validation. Tests gebruiken JUnit, Mockito en MockMvc. Maven beheert de dependencies en bouwt het project.
+De API gebruikt Spring Boot 4.1.1 en Spring MVC voor de REST endpoints, Spring Data JPA voor PostgreSQL en Spring Security voor het verwerken van OAuth2/JWT-tokens. Invoer wordt gevalideerd met Jakarta Validation. Tests gebruiken JUnit, Mockito en MockMvc. Maven beheert de dependencies en bouwt het project.
 
 ## Installatie en configuratie
 
@@ -85,23 +90,26 @@ spring.datasource.password=${POSTGRES_PASSWORD}
 
 Gebruik je een andere databasegebruiker, poort of databasenaam? Pas deze waarden dan aan in `src/main/resources/application.properties`.
 
-Stel in de PowerShell-sessie waarin je de API start het databasewachtwoord in:
+Stel in de PowerShell sessie waarin je de API start het databasewachtwoord in:
 
 ```powershell
 $env:POSTGRES_PASSWORD = "VUL_HIER_JE_LOKALE_DATABASEWACHTWOORD_IN"
 ```
 
-Deze variabele geldt voor de huidige PowerShell-sessie. Start je de applicatie vanuit IntelliJ, voeg `POSTGRES_PASSWORD` dan toe aan de omgevingsvariabelen van de runconfiguratie.
+Deze variabele geldt voor de huidige PowerShell sessie. Start je de applicatie vanuit IntelliJ, voeg `POSTGRES_PASSWORD` dan toe aan de omgevingsvariabelen van de runconfiguratie.
 
-**Let op:** de huidige configuratie gebruikt `spring.jpa.hibernate.ddl-auto=create`. Bij iedere start worden de applicatietabellen opnieuw aangemaakt en wordt `data.sql` uitgevoerd. Gebruik hiervoor een aparte ontwikkel- of testdatabase; bestaande applicatiegegevens gaan verloren.
+**Let op:** de huidige configuratie gebruikt `spring.jpa.hibernate.ddl-auto=update`. Bestaande gegevens blijven bij een normale herstart behouden, `data.sql` wordt bij iedere start uitgevoerd en gebruikt `ON CONFLICT DO NOTHING`.
 
 ### 3. Keycloak voorbereiden
 
-Start je lokale Keycloak-installatie op poort `9090`. Bij een uitgepakte Keycloak-distributie kan dat vanuit de Keycloak-installatiemap met:
+Start je lokale Keycloak installatie op poort `9090`. Bij een uitgepakte Keycloak distributie kan dat vanuit de Keycloak installatiemap met:
 
 ```powershell
 .\bin\kc.bat start-dev --http-port=9090
 ```
+Open bij de eerste start `http://localhost:9090` op dezelfde computer, daar maak je een Keycloak beheeraccount aan met zelfgekozen inloggegevens.
+Bij een bestaande installatie kun je het bestaande beheeraccount gebruiken.
+Let op een Keycloak beheeraccount is niet hetzelfde als de `test_admin` testaccount voor de API!
 
 Open de Admin Console op `http://localhost:9090` en log in met je lokale Keycloak-beheeraccount.
 
@@ -161,24 +169,27 @@ Stop de applicatie in de terminal met `Ctrl+C`.
 
 Controleer na de realmimport onderstaande accounts. Maak ontbrekende accounts aan en stel via **Credentials** lokale testwachtwoorden in.
 
-| Account        | E-mail               | Clientrol |
-| -------------- | -------------------- | --------- |
-| `test`         | `test@test.nl`       | USER      |
-| `test2`        | `test2@test.nl`      | USER      |
-| `test_admin`   | `testadmin@test.nl`  | ADMIN     |
-| `test_no_role` | `testnorole@test.nl` | Geen      |
+| Account        | E-mail               | Effectieve clientrollen |
+| -------------- | -------------------- |-------------------------|
+| `test`         | `test@test.nl`       | USER                    |
+| `test2`        | `test2@test.nl`      | USER                    |
+| `test_admin`   | `testadmin@test.nl`  | USER, ADMIN             |
+| `test_no_role` | `testnorole@test.nl` | Geen                    |
 
 Wijs rollen toe via **Role mapping** bij de gebruiker. Kies de clientrollen van `PokemonCardCollection`, niet alleen gelijknamige realmrollen.
 
-Bij `test2` ontbreekt de USER-clientrol in de bestaande export; voeg deze na import toe. Controleer bij `test_no_role` dat het account ook geen USER- of ADMIN-clientrol erft.
+Controleer bij `test_no_role` dat het account ook geen USER of ADMIN clientrol erft.
 
-USER heeft toegang tot kaarten en de eigen collectie, favorieten en profiel. ADMIN heeft toegang tot `GET /admin/users`. Een ADMIN-account heeft niet automatisch de USER-rol.
+USER heeft toegang tot kaarten en de eigen collectie, favorieten en profiel.
+ADMIN heeft toegang tot `GET /admin/users`, lokale gebruikers bekijken,
+lokale gebruikers blokkeren/deblokkeren en verwijderen, uploads verwijderen en lokale kaartgegevens corrigeren. Een ADMIN-account heeft niet automatisch de USER-rol,
+de meegeleverde test_admin account erft de USER rol afzonderlijk.
 
 Een account heeft een gevulde username en e-mail nodig voor automatische lokale gebruikersaanmaak.
 
 ## API gebruiken met Postman
 
-Importeer het bestand `Pokémon Card Collection API.postman_collection.json` uit de repository. Stel de collectievariabele `baseUrl` in op:
+Importeer het bestand `docs/postman/Pokémon Card Collection API.postman_collection.json` uit de repository. Stel de collectievariabele `baseUrl` in op:
 
 ```text
 http://localhost:8080
@@ -206,7 +217,7 @@ Gebruik voor het ophalen van een token OAuth 2.0 met **Authorization Code**:
 
 Haal een token op, log in met het gewenste testaccount en kies **Use Token**. Controleer per request of het juiste account wordt gebruikt. Voor requests zonder authenticatie kies je **No Auth**.
 
-De collectie bevat vaste voorbeeld-IDs. Pas deze aan aan de aanwezige testdata. Voor eigenaarschapschecks maak je gegevens aan als `test` en probeer je die met `test2` te benaderen. Controleer daarna als eigenaar of de gegevens intact zijn.
+De collectie bevat vaste voorbeeld ID's. Pas deze aan aan de aanwezige testdata. Voor eigenaarschapschecks maak je gegevens aan als `test` en probeer je die met `test2` te benaderen. Controleer daarna als eigenaar of de gegevens intact zijn.
 
 Voor het testen van uploads staan de bestanden `starmie.png` en `charmander.jpg` in `docs/postman/testbestanden/`. Maak eerst een eigen collectie entry aan en gebruik het teruggegeven ID in de uploadrequest.
 Kies in Postman bij **Body → form-data** de key `file` met type **File** en selecteer één van deze bestanden. Gebruik hiervoor een USER-token.
@@ -225,9 +236,11 @@ Of met de Maven Wrapper:
 .\mvnw.cmd test
 ```
 
-Stel vooraf `POSTGRES_PASSWORD` in. De huidige applicatiecontexttest gebruikt de database- en Keycloak-configuratie van de applicatie. PostgreSQL en Keycloak moeten daarom draaien. Ook hierbij kan de testdatabase opnieuw worden aangemaakt.
+De huidige applicatiecontexttest en de 2 integratietesten gebruiken het profiel `test` met een H2 geheugendatabase, daarvoor zijn PostgreSQL en `POSTGRES_PASSWORD` niet nodig.
+Alleen Keycloak moet draaien omdat de securityconfiguratie de JWT-decoder initialiseert.
+H2 gebruikt `ddl-auto=create` en voert `data.sql` niet uit.
 
-De afzonderlijke service- en controllertests gebruiken mocks en hebben deze externe diensten niet nodig.
+De afzonderlijke service-unittests en `UserProfileControllerTest` gebruiken mocks en hebben deze externe diensten niet nodig.
 
 De huidige tests controleren onder andere:
 
@@ -235,8 +248,12 @@ De huidige tests controleren onder andere:
 * ontbrekende of lege verplichte claims;
 * conflicten met bestaande usernames en e-mailadressen;
 * ontbrekende authenticatie en een ongeschikte principal;
-* de 403-JSON-response bij een onvolledig account.
+* de 403 JSON-response bij een onvolledig account;
+* collectiebeheer: toevoegen, aantallen samenvoegen, wijzigen, filteren en verwijderen;
+* externe kaartgegevens: ophalen, lokaal hergebruiken en foutafhandeling;
+* opruimen van een uploadbestand na een gesimuleerde databasefout;
+* 2 integratietests: een onbekende collectie entry geeft 404 en een geldige toevoeging geeft 201 en wordt opgeslagen.
 
-De MockMvc-controllertest controleert de response van de exceptionhandler en laadt geen securityfilters.
+De MockMvc controllertest controleert de response van de exceptionhandler en laadt geen securityfilters.
 
-De Postman-collectie bevat daarnaast handmatige controles voor authenticatie, rollen en eigenaarschap. Voorbeelden zijn 401 zonder token, 403 bij onvoldoende rechten en 404 bij het benaderen van andermans gegevens.
+De Postman collectie bevat daarnaast handmatige controles voor authenticatie, rollen en eigenaarschap. Voorbeelden zijn 401 zonder token, 403 bij onvoldoende rechten en 404 bij het benaderen van andermans gegevens.
